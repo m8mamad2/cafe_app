@@ -8,14 +8,7 @@ import { APP_GUARD, Reflector } from '@nestjs/core';
 import { AuthGuard } from 'src/core/guard/auth.guard';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    // JwtModule.register({
-    //   global: true,
-    //   secret: jwsConstans.secret,
-    // }),
-    Reflector,
-  ],
+  imports: [ DatabaseModule, Reflector, ],
   controllers: [AuthController,],
   providers: [
     {
@@ -24,7 +17,6 @@ import { AuthGuard } from 'src/core/guard/auth.guard';
     },
     AuthService,
   ],
-  // exports: [AuthService]
 })
 
 export class AuthModule { }

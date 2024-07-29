@@ -1,5 +1,5 @@
 import { DatabaseService } from './../../core/database/database.service';
-import { BadRequestException,  HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from './dto/auth.dto';
 import { NotExistException } from 'src/core/exception';
@@ -8,11 +8,11 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
-  constructor( private jwtService: JwtService, private databaseService: DatabaseService ) { }
+  constructor(private jwtService: JwtService, private databaseService: DatabaseService) { }
 
   async login(authModel: AuthDto) {
 
-    if(!authModel.email || !authModel.password)
+    if (!authModel.email || !authModel.password)
       throw new BadRequestException();
 
     const user = await this.databaseService.user.findUnique({
@@ -26,24 +26,26 @@ export class AuthService {
     if (isCurrectPassword) {
       const payload = { sub: user.id, username: user.userName };
       const token = await this.jwtService.signAsync(payload);
-      return { access_token: token };
+      return { ...user, access_token: token, localId: user.id };
     }
     else throw new UnauthorizedException();
 
   }
 
   async signUp(authModel: Prisma.UserCreateInput) {
-    if (!authModel.password || !authModel.email) 
+    if (!authModel.password || !authModel.email)
       throw new BadRequestException();
 
-    try{
+    try {
       const password = await bcrypt.hash(authModel.password, 10);
       const res = await this.databaseService.user.create({
         data: { ...authModel, password: password },
       });
-      return { data : res };
+      const payload = { sub: res.id, username: res.userName };
+      const token = await this.jwtService.signAsync(payload);
+      return { ...res, password: undefined, access_token: token, localId: res.id };
     }
-    catch(e){
+    catch (e) {
       throw new HttpException(e, HttpStatus.BAD_REQUEST);
     }
 

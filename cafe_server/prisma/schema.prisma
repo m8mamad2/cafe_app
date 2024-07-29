@@ -24,14 +24,14 @@ model Favorite {
 }
 
 model User {
-  id          Int    @id @default(autoincrement())
-  email       String @unique
+  id          Int     @id @default(autoincrement())
+  email       String  @unique
   password    String
-  userName    String @unique
-  name        String
-  family      String
-  address     String
-  phoneNumber String @unique
+  userName    String  @unique
+  name        String?
+  family      String?
+  address     String?
+  phoneNumber String? @unique
 }
 
 model Message {

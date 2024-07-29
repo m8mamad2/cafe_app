@@ -20,9 +20,5 @@ export class AuthController {
         return this.authService.signUp(authModel);
     }
 
-    @Get('/ok')
-    find(){
-        return {msg: "hale haji"};
-    }
 
 }
