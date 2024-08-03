@@ -4,6 +4,9 @@ import 'package:cafe_mobile/src/config/locator.dart';
 import 'package:cafe_mobile/src/config/theme.dart';
 import 'package:cafe_mobile/src/core/data_source/local/local_db.dart';
 import 'package:cafe_mobile/src/core/utils/bloc_providers.dart';
+import 'package:cafe_mobile/src/view/presentation/page/chat_screen.dart';
+import 'package:cafe_mobile/src/view/presentation/page/details_food_screen.dart';
+import 'package:cafe_mobile/src/view/presentation/page/reservation_screen.dart';
 import 'package:cafe_mobile/src/view/presentation/page/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -25,9 +28,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeApp.themeData,
-      home: const SplashScreen(),
+      home: const ChatRoomScreen(),
     );
   }
 }

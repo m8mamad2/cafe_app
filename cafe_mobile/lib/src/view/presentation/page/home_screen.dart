@@ -1,12 +1,9 @@
-import 'dart:developer';
 
-import 'package:cafe_mobile/src/core/data_source/local/local_db.dart';
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
-import 'package:cafe_mobile/src/core/utils/get_token.dart';
-import 'package:cafe_mobile/src/view/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/home_widgets/home_appbar_widget.dart';
+import 'package:cafe_mobile/src/view/presentation/widget/home_widgets/home_popular_widget.dart';
+import 'package:cafe_mobile/src/view/presentation/widget/home_widgets/home_special_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,27 +17,25 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: homeAppbarWidget(context),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text("Find The Delicious \n Food Around you 🔥",style: Theme.of(context).textTheme.titleLarge,),
-
-            Column(
-              children: [
-                Text('Populdar 🔥',style: Theme.of(context).textTheme.titleSmall),
-                SizedBox(
-                  height: context.height * 0.25,
-                  width: double.infinity,
-                  child: ListView.builder(
-                    itemCount: 15,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) => popularCardWidget(context),),
-                )
-              ],
-            )
-          ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10,),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+          
+              Container(
+                margin: EdgeInsets.only(top: context.height*0.04,bottom: context.height*0.04),
+                child: Text(
+                  "Find The Delicious \nFood Around you 😋",
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 28),)),
+          
+              homePopularWidget(context),
+          
+              homeSpecialWidget(context),
+          
+            ],
+          ),
         ),
       ),
     );
@@ -48,30 +43,3 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 
-Widget popularCardWidget(BuildContext context)=> Container(
-  color: Colors.orange,
-  width: context.width * 0.3,
-  child: Stack(
-    children: [
-      Container(
-        color: Colors.red,
-        child: Column(
-          children: [
-            Text('Pitzaaa 1'),
-            Text('Peperon one'),
-            Row(
-                children: [
-                  Text('\$295'),
-                  Container(
-                    child: Icon(Icons.add),
-                  )
-                ],
-              )
-          ],
-        ),
-      ),
-      Image.asset('assets/food.png', width: context.width,),
-    ],
-  ),
-  
-);
