@@ -8,22 +8,21 @@ class ChatReceiverBubbleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Flexible(
-          flex: 72,
+          flex: 15,
           fit: FlexFit.tight,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Container(
                 margin: EdgeInsets.only(right: context.width*0.035,top: context.width*0.02),
                 padding: EdgeInsets.symmetric(
                   horizontal: context.width*0.03,
                   vertical: context.width*0.02),
-                decoration: const BoxDecoration(
-                  color: Color(0xffd8e8d3),
-                  borderRadius: BorderRadius.only(
+                decoration:  BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                  borderRadius:const BorderRadius.only(
                     topRight:Radius.circular(8) ,bottomRight: Radius.circular(8),
                     topLeft: Radius.circular(14),bottomLeft: Radius.circular(14)
                   )
@@ -34,19 +33,18 @@ class ChatReceiverBubbleWidget extends StatelessWidget {
                   children: [
                     Text(
                       receiverMessage,
-                      style:const TextStyle(fontSize: 12,fontWeight: FontWeight.w400),
+                      style:Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.right,
                     ),
                     Container(
                       width: context.width*0.12,
                       margin: EdgeInsets.only(top: context.width*0.01),
-                      child: Row(
+                      child:  Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Icon(Icons.check),
-                          const Text(
+                          Text(
                             '۰۹:۵۵',
-                            style: TextStyle(fontSize: 8,fontWeight: FontWeight.w400 ),),
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12,fontWeight: FontWeight.w400),),
                         ],
                       ),
                     ),
@@ -56,11 +54,6 @@ class ChatReceiverBubbleWidget extends StatelessWidget {
             ],
           ),
           //
-        ),
-        Flexible(
-          flex: 15,
-          fit: FlexFit.tight,
-          child: Container( width: context.width*0.1, ),
         ),
       ],
     );

@@ -3,20 +3,6 @@ import 'package:cafe_mobile/src/view/presentation/widget/chat_widgets/chat_list_
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
-
-  @override
-  State<ChatScreen> createState() => _ChatScreenState();
-}
-class _ChatScreenState extends State<ChatScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-    );
-  }
-}
 
 
 class ChatRoomScreen extends StatefulWidget {
@@ -52,44 +38,79 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> with TickerProviderStat
     return PopScope(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed:(){},
+            icon:const Icon(Icons.arrow_back)
+          ),
+        ),
         body: Column(
+          
           children: [
 
+
             //* messages
-            Expanded(child: ChatListViewBuilderWidget(scrollController: scrollController, focusNode: focusNode,)),
+            Expanded(
+              child: ChatListViewBuilderWidget(scrollController: scrollController, focusNode: focusNode,)),
 
             Container(
               width: context.width,
-              height: context.height*0.1,
-              color: Theme.of(context).cardColor,
+              height: context.height*0.12,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration:BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
+                boxShadow:const[
+                  BoxShadow(
+                    color: Colors.white12,
+                    offset: Offset( 0, -5),
+                    blurRadius: 10
+                  )
+                ]
+              ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: context.height*0.7,
+
+                  Container(
+                      alignment: Alignment.center,
+                      height: context.height*0.08,
+                      width: context.width*0.75,
                       child: TextField(
                         focusNode: focusNode,
                         controller: messageController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           filled: true,
-                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                          fillColor: Theme.of(context).cardColor,
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                          )
+                            borderSide: BorderSide(color: Theme.of(context).cardColor)
+                          ),
                         ),
                       ),
                     ),
-                  ),
+
                   ElevatedButton(
+                    style:ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: Size(context.width *0.14, 50)
+                    ),
                     onPressed: (){
                       final MessageData data = MessageData(messages: 'Ok Ok', time: '09:00', type: '', isMine: true);
                       messageList.add(data);
                       scrollController.animateTo( 0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut,);
                       messageController.text = '';
+                      setState(() {});
                     }, 
                     child: Icon(Icons.send))
+                
                 ],
               ),
             )  
@@ -98,15 +119,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> with TickerProviderStat
         ),
       ),
 
-    // canPop: isEmojiVisible && !focusNode.hasFocus ? (){ isEmojiVisible = !isEmojiVisible; setState((){}); return false;} : true
     );
   }
   
   
 
 }
-
-
 
 
 
