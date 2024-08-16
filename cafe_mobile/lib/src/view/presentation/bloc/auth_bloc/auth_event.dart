@@ -16,3 +16,4 @@ class AuthLogoutEvent extends AuthEvent {
   final BuildContext context;
   AuthLogoutEvent(this.context);
 }
+

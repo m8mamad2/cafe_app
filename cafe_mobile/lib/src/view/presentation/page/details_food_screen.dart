@@ -1,79 +1,74 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/view/data/model/food_model.dart';
+import 'package:cafe_mobile/src/view/presentation/widget/details_food_add_button_widget.dart';
 import 'package:flutter/material.dart';
 
-class DetailsFoodScreen extends StatefulWidget {
-  const DetailsFoodScreen({super.key});
+class DetailsFoodScreen<T> extends StatefulWidget {
+  final FoodModel? data;
+  const DetailsFoodScreen({super.key, required this.data});
 
   @override
   State<DetailsFoodScreen> createState() => _DetailsFoodScreenState();
 }
 class _DetailsFoodScreenState extends State<DetailsFoodScreen> {
+
+  late String currentImage;
+  changeCurrentImage(String image)=> setState(() => currentImage = image);
+  
+  @override
+  void initState() {
+    super.initState();
+    currentImage = widget.data!.images![0];
+  }
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Column(
           children: [
-            Stack(
+            Stack(  
               children: [
-                  Container(
-                    width: context.width,
-                    height: context.height*0.35 ,
-                    padding: const EdgeInsets.all(15),
-                    decoration:  BoxDecoration(
-                      border: Border.symmetric(
-                        vertical: BorderSide(color: Theme.of(context).primaryColor)
-                      ),
-                      color: Theme.of(context).cardColor,
-                      borderRadius: const BorderRadius.only( bottomLeft: Radius.circular(1000), bottomRight: Radius.circular(1000), )),
-                    child: Center(
-                      child: Container(
-                        decoration:  const BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black54,
-                              offset: Offset(0, 2 ),
-                              blurRadius: 10,
-                              spreadRadius: 0.1,
-                            )
-                          ]
-                        ),
-                        child: Image.asset('assets/food.png', )),
-                    ),),
-                  Container(
-                    margin: EdgeInsets.only(top: context.height*0.32),
-                    width: context.width*0.26,
-                    height: context.height*0.12,
-                    decoration:  BoxDecoration(
-                      border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.5)),
-                      shape: BoxShape.circle
+                
+                Container(
+                  width: context.width,
+                  height: context.height*0.35 ,
+                  padding: const EdgeInsets.all(15),
+                  decoration:  BoxDecoration(
+                    border: Border.symmetric(
+                      vertical: BorderSide(color: Theme.of(context).primaryColor)
                     ),
-                    child: Image.asset('assets/food.png'),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: context.height*0.38,left: context.width*0.36),
-                    width: context.width*0.26,
-                    height: context.height*0.12,
-                    decoration:  BoxDecoration(
-                      border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.5)),
-                      shape: BoxShape.circle
-                    ),
-                    child: Image.asset('assets/food.png'),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
+                    color: Theme.of(context).cardColor,
+                    borderRadius: const BorderRadius.only( bottomLeft: Radius.circular(1000), bottomRight: Radius.circular(1000), )),
+                  child: Center(
                     child: Container(
-                      margin: EdgeInsets.only(top: context.height*0.32),
-                      width: context.width*0.26,
-                      height: context.height*0.12,
-                      decoration:  BoxDecoration(
-                        border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.5)),
-                        shape: BoxShape.circle
+                      decoration:  const BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black54,
+                            offset: Offset(0, 2 ),
+                            blurRadius: 10,
+                            spreadRadius: 0.1,
+                          )
+                        ]
                       ),
-                      child: Image.asset('assets/food.png'),
-                    ),
-                  ),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 500),
+                        transitionBuilder: (child, animation) => ScaleTransition(scale: animation, child: child,),
+                        child: Image.network( 
+                          context.convertImageUrl(currentImage),
+                          key: ValueKey(currentImage), ))),
+                  ),),
+                
+                oneImageWidget(context,EdgeInsets.only(top: context.height*0.32), widget.data?.images?[1] ?? '',changeCurrentImage),
+                oneImageWidget(context,EdgeInsets.only(top: context.height*0.38,left: context.width*0.36), widget.data?.images?[2] ?? '', changeCurrentImage),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: oneImageWidget(context, EdgeInsets.only(top: context.height*0.32),widget.data?.images?[3] ?? '',changeCurrentImage ),
+                ),
+                
+              
               ],
             ),
             Expanded(
@@ -82,91 +77,34 @@ class _DetailsFoodScreenState extends State<DetailsFoodScreen> {
                 child: Column(
                   children: [
                     SizedBox(height: context.height*0.05),
+                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('First Pitza PEPEROny 🔥',style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 21)),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: '\$ ', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).primaryColor,fontSize: 24)),
-                              TextSpan(text: '200', style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 24)),
-                            ]
-                        ))
+                        Text('${widget.data?.title}🔥',style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 21)),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 6),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(text: '\$ ', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).primaryColor,fontSize: 35)),
+                                TextSpan(text: widget.data?.price.toString(), style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w900,fontSize: 28)),
+                              ]
+                          )),
+                        )
                       ],
                     ),
+                    
                     SizedBox(height: context.height*0.02,),
-                    Text('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea ⭐',
+                    
+                    Text(widget.data?.description ?? '',
                       style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey),),
+                    
                     const Spacer(),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 30),
-                      child: Row(
-                        children: [
-                      
-                          Expanded(
-                            flex: 2,
-                            child: SizedBox(
-                              height: 50,
-                              child: ElevatedButton(
-                                onPressed: (){}, 
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Theme.of(context).cardColor,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)
-                                  )
-                                ),
-                                child: Text('Add To Cart  🛒', style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 14),)),
-                            ),
-                          ),
-                            
-                          const SizedBox(width: 5,),
-                          
-                          Expanded(
-                            child: Container(
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).cardColor,
-                                borderRadius: BorderRadius.circular(10)
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 15),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                      
-                                  Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      border: Border.all( width: 0.1, color: Colors.white ),
-                                      borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: const Icon(Icons.add, color: Colors.white),
-                                  ),
-
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                                    child: Text('2', style: Theme.of(context).textTheme.titleSmall,)),
-                      
-                                  Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      border: Border.all( width: 0.1, color: Colors.white ),
-                                      borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: const Icon(Icons.remove, color: Colors.white),
-                                  ),
-                                  
-                                ],
-                              ),
-                            ),
-                          )
-                          
-                        ],
-                      ),
-                    ),
+                    
+                    DetailsFoodAddButtonWidget(foodModel: widget.data!)
+                  
                   ],
                 ),),
             )
@@ -177,11 +115,18 @@ class _DetailsFoodScreenState extends State<DetailsFoodScreen> {
   }
 }
 
-productActionStyle(BuildContext context)=>ElevatedButton.styleFrom(
-  minimumSize: const Size(40, 30),
-  maximumSize: const Size(40, 30),
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(5),
-  ),
-  backgroundColor: Theme.of(context).primaryColor,
-);
+oneImageWidget(BuildContext context,EdgeInsets margin,String imageUrl, Function(String image) changeCurrentImage)=> Container(
+    margin: margin,
+    width: context.width*0.26,
+    height: context.height*0.12,
+    padding: const EdgeInsets.all(2),
+    decoration:  BoxDecoration(
+      border: Border.all(color: Theme.of(context).primaryColor),
+      shape: BoxShape.circle,
+    ),
+    child: InkWell(
+      onTap: ()=> changeCurrentImage(imageUrl),
+      child: Image.network(context.convertImageUrl(imageUrl))),
+  );
+
+

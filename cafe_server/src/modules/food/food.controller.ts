@@ -3,6 +3,7 @@ import { FoodService } from './food.service';
 import { Body, Controller, Get, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+import { Public } from 'src/core/guard/auth.metadata';
 
 
 @Controller('food')
@@ -20,11 +21,12 @@ export class FoodController {
         return this.foodService.getAll();
     }
 
-    @Get('/clear')
+    @Post('/clear')
     clear() {
         return this.foodService.clear()
     }
 
+    @Public()
     @Get('/download_image/:image')
     downlaodImage(@Param('image') image: string, @Res() res: Response) {
         return this.foodService.downlaodImage(image, res);

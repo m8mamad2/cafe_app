@@ -1,7 +1,7 @@
 import { DatabaseService } from './../../core/database/database.service';
-import { BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException , Request} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthDto } from './dto/auth.dto';
+import { AuthDto, UpdateUserDto } from './dto/auth.dto';
 import { NotExistException } from 'src/core/exception';
 import * as bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
@@ -51,5 +51,35 @@ export class AuthService {
 
   }
 
+  async updateUser(updateModel: Prisma.UserCreateInput , @Request() req){
+    try{
+      const user = req.user;
+      // const currentData = await this.databaseService.user.findFirst({ where: { id: user.sub } })
+      await this.databaseService.user.update({
+        where: { id: user.sub },
+        data: updateModel
+        // data:  { ...currentData , updateModel.key : updateModel.value}
+      });
+      return { msg: "ok" };
+    }
+    catch(e){
+      throw new BadRequestException()
+    }
+  }
+
+  async getCurrentUser(@Request() req){
+    try{
+      const user = req.user;
+      const token = await this.jwtService.signAsync(user);
+      const data =  await this.databaseService.user.findUnique({ where: { id: user.sub } });
+      return { ...data, access_token: token };
+    }
+    catch(e){
+      throw new BadRequestException()
+    }
+  }
+
 }
+
+
 

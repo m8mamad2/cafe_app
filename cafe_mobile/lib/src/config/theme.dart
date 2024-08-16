@@ -23,7 +23,8 @@ class ThemeApp{
   );
 
   static AppBarTheme appBarTheme = const AppBarTheme(
-    backgroundColor: kBackgroundColor
+    backgroundColor: kBackgroundColor,
+    surfaceTintColor: kBackgroundColor
   );
 
 }

@@ -1,91 +1,83 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/view/presentation/bloc/favorite_bloc/favorite_bloc.dart';
+import 'package:cafe_mobile/src/view/presentation/widget/favorite_widgets/favorite_one_card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FavoriteScreen extends StatelessWidget {
+class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
+
+  @override
+  State<FavoriteScreen> createState() => _FavoriteScreenState();
+}
+class _FavoriteScreenState extends State<FavoriteScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<FavoriteBloc>().add(GetAllFavoriteEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( backgroundColor: Theme.of(context).scaffoldBackgroundColor, ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10,),
+        padding: const EdgeInsets.symmetric(  horizontal: 10, ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-        
+
             Container(
-              margin: EdgeInsets.only(bottom: context.height*0.04),
-              child: Text(
-                "Your Favorites ✅",
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 28),)),
-        
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: context.height * 0.06,bottom: context.height * 0.02),
+                    child: Text(
+                      "Your Favorites ✅",
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 28),
+                    )),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 13),
+                    child: IconButton(
+                      onPressed: ()=> context.read<FavoriteBloc>().add(ClearAllFavoriteEvent()), 
+                      icon: const Icon(Icons.delete_outline, color: Colors.white,size: 32,)),
+                  ),
+                ],
+              ),
+            ),
+            
             Expanded(
-              child: GridView.builder(
-                itemCount: 20,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 0.6,
-                  crossAxisCount: 2),
-                itemBuilder: (context, index) {
-        
-                  double topPadding = index % 2 == 0 ? 10.0 : 20.0; // Example logic for dynamic top padding
-                  double bottomPadding = index % 3 == 0 ? 20 : 10.0; // Example logic for dynamic bottom padding
-        
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: bottomPadding,top: topPadding),
-                    child: favoriteOneCardWidget(context));
-                }),
+              child: BlocBuilder<FavoriteBloc, FavoriteState>(
+                builder: (context, state) {
+                  if(state is LoadingFavoriteState) return const CircularProgressIndicator(color: Colors.white,);
+                  if(state is SuccessFavoriteState){
+                    final data = state.favoriteData;
+                    return data != null && data.isNotEmpty 
+                      ? GridView.builder(
+                          itemCount: data.length,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisSpacing: 10,
+                                  childAspectRatio: 0.6,
+                                  crossAxisCount: 2),
+                          itemBuilder: (context, index) {
+                            double topPadding = index % 2 == 0 ? 10.0 : 20.0;
+                            double bottomPadding = index % 3 == 0 ? 20 : 10.0; 
+                            return Padding(
+                                padding: EdgeInsets.only(bottom: bottomPadding, top: topPadding),
+                                child: favoriteOneCardWidget(context, data[index]));
+                          })
+                      : const Center(child: Text('Empty'));
+                  };
+                  if(state is FailFavoriteState) return Text(state.error, style: TextStyle(color: Colors.white),);
+                  return Container();
+                },
+              ),
             )
-        
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
-Widget favoriteOneCardWidget(BuildContext context)=> Container(
-  width: context.width * 0.38,
-  margin: const EdgeInsets.symmetric(horizontal: 5),
-  child: Container(
-    padding: const EdgeInsets.only(left: 10,right: 10, bottom: 15),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      color: Theme.of(context).cardColor,
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Image.asset('assets/food.png',),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Pitzaaa 1',style: TextStyle(color: Colors.white,fontSize: 14),),
-            Text('Peperon one',style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white60),),
-            const SizedBox(height: 5,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('\$295',style: Theme.of(context).textTheme.labelLarge,),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  padding: const EdgeInsets.all(4),
-                  child: Icon(Icons.add),
-                )
-              ],
-              )
-          ],
-        )
-      ],
-    ),
-  ),
-  
-);

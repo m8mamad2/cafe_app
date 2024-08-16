@@ -2,9 +2,8 @@ import 'dart:io';
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
 import 'package:cafe_mobile/src/core/utils/get_token.dart';
 import 'package:cafe_mobile/src/view/presentation/page/auth_screen.dart';
-import 'package:cafe_mobile/src/view/presentation/page/profile_screen.dart';
+import 'package:cafe_mobile/src/view/presentation/page/main_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
 
   
 class SplashScreen extends StatelessWidget {
@@ -15,9 +14,10 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const Expanded(
+           Expanded(
             flex: 6,
-            child: RiveAnimation.asset('assets/foodie.riv')),
+            // child: RiveAnimation.asset('assets/foodie.riv')),
+            child: Container()),
           Expanded(
             child: FutureBuilder(
               future: internetAndAuthChecker(context),
@@ -41,8 +41,8 @@ class SplashScreen extends StatelessWidget {
       final result = await InternetAddress.lookup('google.com');
       hasInternet =  result.isNotEmpty && result[0].rawAddress.isNotEmpty;
       if(hasInternet){
-        bool isAuth = await GetToken.getToken();
-        await Future.delayed(const Duration(seconds: 2),()=> context.navigateReplacement(isAuth ? const ProfileScreen() : const AuthScreen()));
+        String? isAuth = await GetToken.getToken();
+        await Future.delayed(const Duration(seconds: 2),()=> context.navigateReplacement(isAuth != null ? const MainScreen() : const AuthScreen()));
         return true;
       }
       else return false;

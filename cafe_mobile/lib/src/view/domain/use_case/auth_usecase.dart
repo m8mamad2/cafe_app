@@ -9,7 +9,8 @@ class AuthUseCase{
   AuthUseCase(this.repo);
 
   Future<DataState> auth(AuthLoginReqModel? loginModel, AuthSignupReqModel? signupModel, bool isLogin)=>  repo.auth(loginModel, signupModel, isLogin);
-
+  Future<DataState> currentUser(bool needGetFromServer)=> repo.currentUser(needGetFromServer);
   Future<bool> logout()=> repo.logout();
+  Future<DataState> updateUser(String key, String value)=> repo.updateUser(key, value);
 
 }

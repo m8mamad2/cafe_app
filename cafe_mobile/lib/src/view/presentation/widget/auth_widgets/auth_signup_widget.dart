@@ -21,7 +21,7 @@ class _AuthSignupWidgetState extends State<AuthSignupWidget> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   
-  bool isHide = false;
+  bool isHide = true;
   handleHideTap()=> setState(()=> isHide = !isHide);
   
   @override

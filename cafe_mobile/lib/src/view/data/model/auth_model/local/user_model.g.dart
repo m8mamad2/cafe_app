@@ -37,23 +37,28 @@ const UserModelSchema = CollectionSchema(
       name: r'family',
       type: IsarType.string,
     ),
-    r'name': PropertySchema(
+    r'id': PropertySchema(
       id: 4,
+      name: r'id',
+      type: IsarType.long,
+    ),
+    r'name': PropertySchema(
+      id: 5,
       name: r'name',
       type: IsarType.string,
     ),
     r'password': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'password',
       type: IsarType.string,
     ),
     r'phoneNumber': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'userName': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'userName',
       type: IsarType.string,
     )
@@ -139,10 +144,11 @@ void _userModelSerialize(
   writer.writeString(offsets[1], object.address);
   writer.writeString(offsets[2], object.email);
   writer.writeString(offsets[3], object.family);
-  writer.writeString(offsets[4], object.name);
-  writer.writeString(offsets[5], object.password);
-  writer.writeString(offsets[6], object.phoneNumber);
-  writer.writeString(offsets[7], object.userName);
+  writer.writeLong(offsets[4], object.id);
+  writer.writeString(offsets[5], object.name);
+  writer.writeString(offsets[6], object.password);
+  writer.writeString(offsets[7], object.phoneNumber);
+  writer.writeString(offsets[8], object.userName);
 }
 
 UserModel _userModelDeserialize(
@@ -156,11 +162,12 @@ UserModel _userModelDeserialize(
   object.address = reader.readStringOrNull(offsets[1]);
   object.email = reader.readStringOrNull(offsets[2]);
   object.family = reader.readStringOrNull(offsets[3]);
+  object.id = reader.readLongOrNull(offsets[4]);
   object.localId = id;
-  object.name = reader.readStringOrNull(offsets[4]);
-  object.password = reader.readStringOrNull(offsets[5]);
-  object.phoneNumber = reader.readStringOrNull(offsets[6]);
-  object.userName = reader.readStringOrNull(offsets[7]);
+  object.name = reader.readStringOrNull(offsets[5]);
+  object.password = reader.readStringOrNull(offsets[6]);
+  object.phoneNumber = reader.readStringOrNull(offsets[7]);
+  object.userName = reader.readStringOrNull(offsets[8]);
   return object;
 }
 
@@ -180,12 +187,14 @@ P _userModelDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
+      return (reader.readStringOrNull(offset)) as P;
+    case 8:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -875,6 +884,75 @@ extension UserModelQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'family',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> idEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> idGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> idLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> idBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1582,6 +1660,18 @@ extension UserModelQuerySortBy on QueryBuilder<UserModel, UserModel, QSortBy> {
     });
   }
 
+  QueryBuilder<UserModel, UserModel, QAfterSortBy> sortById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterSortBy> sortByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
   QueryBuilder<UserModel, UserModel, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1681,6 +1771,18 @@ extension UserModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<UserModel, UserModel, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
   QueryBuilder<UserModel, UserModel, QAfterSortBy> thenByLocalId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'localId', Sort.asc);
@@ -1772,6 +1874,12 @@ extension UserModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<UserModel, UserModel, QDistinct> distinctById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'id');
+    });
+  }
+
   QueryBuilder<UserModel, UserModel, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1833,6 +1941,12 @@ extension UserModelQueryProperty
     });
   }
 
+  QueryBuilder<UserModel, int?, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
   QueryBuilder<UserModel, String?, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
@@ -1863,8 +1977,7 @@ extension UserModelQueryProperty
 // **************************************************************************
 
 UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel()
-  ..localId = (json['localId'] as num).toInt()
-  ..id = json['id'] as num?
+  ..id = (json['id'] as num?)?.toInt()
   ..email = json['email'] as String?
   ..password = json['password'] as String?
   ..userName = json['userName'] as String?
@@ -1875,7 +1988,6 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel()
   ..access_token = json['access_token'] as String?;
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
-      'localId': instance.localId,
       'id': instance.id,
       'email': instance.email,
       'password': instance.password,

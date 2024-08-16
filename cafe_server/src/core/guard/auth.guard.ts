@@ -28,7 +28,7 @@ export class AuthGuard implements CanActivate {
                 token,
                 { secret: jwsConstans.secret }
             )
-            request['token'] = payload;
+            request['user'] = payload;
         }
         catch (e) {
             throw new UnauthorizedException()

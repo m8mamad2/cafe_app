@@ -1,6 +1,5 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/chat_widgets/chat_list_view_builder_widget.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 
 

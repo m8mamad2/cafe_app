@@ -9,3 +9,9 @@ export class AuthDto {
     password: string;
 
 }
+
+
+export class UpdateUserDto {
+    key: string;
+    value: string;
+}

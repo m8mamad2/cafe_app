@@ -3,7 +3,6 @@ import 'package:cafe_mobile/src/view/presentation/widget/auth_widgets/auth_login
 import 'package:cafe_mobile/src/view/presentation/widget/auth_widgets/auth_signup_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/auth_widgets/auth_tab_bar_button.dart';
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -62,9 +61,10 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin{
                 ),
                 child: Column(
                   children: [
-                    const Expanded(
+                    Expanded(
                       flex: 6,
-                      child: RiveAnimation.asset('assets/foodie.riv')),
+                      // child: RiveAnimation.asset('assets/foodie.riv')),
+                      child: Container()),
                     Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

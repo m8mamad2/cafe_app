@@ -52,8 +52,6 @@ export class FoodService {
     async downlaodImage(image: string, @Res() res: Response){
         try{
             const file = join(this.uploadDirPath, image);
-            console.log(image);
-            console.log(file);
             await fs.access(file);
             const fileStream = createReadStream(file);
             fileStream.pipe(res);

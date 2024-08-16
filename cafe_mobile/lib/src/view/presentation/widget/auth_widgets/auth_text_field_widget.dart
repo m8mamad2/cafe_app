@@ -14,7 +14,7 @@ Widget authTextFieldWidget(BuildContext context, TextEditingController controlle
 
     child: TextFormField(
       controller: controller,
-      style: Theme.of(context).textTheme.titleSmall,
+      style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 14,fontWeight: FontWeight.w400),
       obscureText: isPassword ? isHide ? true : false : false,
       decoration: InputDecoration(
         labelText: lable,

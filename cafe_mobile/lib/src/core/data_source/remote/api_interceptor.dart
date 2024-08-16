@@ -7,8 +7,8 @@ class AuthCheckerInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async{
     options.contentType = "application/json";
-    bool token = await GetToken.getToken();
-    if (token)
+    String? token = await GetToken.getToken();
+    if (token != null)
       options.headers.addAll({'Authorization': 'Bearer $token'});
     handler.next(options);
   }

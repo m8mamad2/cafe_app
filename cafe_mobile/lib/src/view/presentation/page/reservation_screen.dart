@@ -1,8 +1,12 @@
+import 'package:cafe_mobile/src/core/constans/value_notifier.dart';
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/view/presentation/bloc/reservation_bloc/reservation_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/reservation_widgets/reservation_appbar_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/reservation_widgets/reservation_background_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/reservation_widgets/reservation_one_table_widget.dart';
+import 'package:cafe_mobile/src/view/presentation/widget/reservation_widgets/reservation_schedul_reserve_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReservationScreen extends StatefulWidget {
   const ReservationScreen({super.key});
@@ -18,6 +22,8 @@ class _ReservationScreenState extends State<ReservationScreen> {
   @override
   void initState() {
     super.initState();
+
+    context.read<ReservationBloc>().add(GetAllTableReservationEvent());
     
     _scrollController1.addListener(() {
       if (_scrollController1.offset != _scrollController2.offset) {
@@ -40,105 +46,66 @@ class _ReservationScreenState extends State<ReservationScreen> {
   }
   
   
-  
   @override
   Widget build(BuildContext context,) {
-    return Scaffold(
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) => selectedTable.value = null,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            reservationBackgroundsWidget(context, _scrollController1),
+            BlocBuilder<ReservationBloc, ReservationState>(
+              builder: (context, state) {
+                if(state is LoadingReservationState)return CircularProgressIndicator();
+                if(state is SuccessReservationState){
+                  
+                  final data = state.reservationModel;
       
-      body: Stack(
-        children: [
-          Container(
-              height: context.height*0.75,  
-              padding: EdgeInsets.only(top: context.height *0.1),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 5,
-                reverse: true,
-                controller: _scrollController2,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                itemBuilder: (context, index) {
-                  return index == 0 ||  index == 4 
-                    ? oneColumnTable(context) 
-                    : Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        child: reservationOneTableWidget(context, 0, 3));
-                },
-              ),
-            ),
-          reservationBackgroundsWidget(context, _scrollController1),
-          reservationAppbarWidget(context),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: context.height*0.25,
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                )
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text('Schedule a Visit', style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 22),),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Theme.of(context).primaryColor)
-                          ),
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(4),
-                          child: Text('22 Jun 2023', style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 14, fontWeight: FontWeight.w500),)
-                        ),
+                  return  ValueListenableBuilder<int?>(
+                    valueListenable: selectedTable,
+                    builder:(context, value, child) => Container(
+                        height: context.height*0.75,  
+                        padding: EdgeInsets.only(top: context.height *0.1),
+                        child: GridView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 6,
+                          reverse: true,
+                          controller: _scrollController2,
+                          padding: const EdgeInsets.only(top: 20),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(mainAxisExtent: context.width * 0.45,crossAxisCount: 2), 
+                          itemBuilder: (context, index) {
+      
+                             
+                            if(index < data.length) 
+                              return int.parse(data[index].table) == index 
+                                ? reservationOneTableWidget(context, 0, 3, index, true, true)
+                                : value != null  
+                                  ? value == index 
+                                    ? reservationOneTableWidget(context, 0, 3, index, true, false)
+                                    : reservationOneTableWidget(context, 0, 3, index, false,false)
+                                  : reservationOneTableWidget(context, 0, 3, index, false, false); 
+      
+                            else return value != null  
+                                ? value == index 
+                                  ? reservationOneTableWidget(context, 0, 3, index, true, false)
+                                  : reservationOneTableWidget(context, 0, 3, index, false,false)
+                                : reservationOneTableWidget(context, 0, 3, index, false, false); 
+                              
+                        }),
                       ),
-                      const SizedBox(width: 20,),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Theme.of(context).primaryColor)
-                          ),
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(4),
-                          child: Text('22 Jun 2023', style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 14, fontWeight: FontWeight.w500),)
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: context.width,
-                    height: 45,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Theme.of(context).primaryColor
-                    ),
-                    alignment: Alignment.center,
-                    child: const Text('Book Table'),
-                  )
-                ],
-              ),
+                  );
+                }
+                if(state is FailReservationState) return Text(state.error , style: const TextStyle(color: Colors.white),);
+                return Container();
+              },
             ),
-          )
-        ],
+            reservationAppbarWidget(context),
+            const ReservationScheduleReserveWidget(),
+          ],
+        ),
       ),
     );
   }
 }
 
 
-
-
-Widget oneColumnTable(BuildContext context)=> Column(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    reservationOneTableWidget(context, 0.4,2),
-    reservationOneTableWidget(context,-0.4,2),
-  ],
-);

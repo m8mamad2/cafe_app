@@ -9,7 +9,7 @@ import 'package:cafe_mobile/src/view/data/model/auth_model/auth_signup_req_model
 import 'package:cafe_mobile/src/view/domain/repo/auth_repo.dart';
 import 'package:isar/isar.dart';
 
-class AuthRepoImpl implements AuthRepo {
+class AuthRepoImpl extends AuthRepo {
 
   final Api api;
   AuthRepoImpl( this.api );
@@ -36,6 +36,36 @@ class AuthRepoImpl implements AuthRepo {
       return true;
     }
     catch(e){ return false; }
+  }
+
+  @override
+  Future<DataState> currentUser(bool needGetFromServer)async{
+    try{
+      if(needGetFromServer) return await getCurrentUserFromServer();
+      else{
+        final res = await LocalDb.isar.userModels.where().findAll();
+        return DataSuccess(res.last);
+      }
+    }
+    catch(e){ return DataFailed(e.toString()); }
+  }
+
+  @override
+  Future<DataState> updateUser(String key, String value)async{
+    final res = await api.put(ApiEndPoints.kUpdateUserUrl, { key: value });
+    if(res is DataSuccess) return await getCurrentUserFromServer();
+    else return res;
+  }
+
+  Future<DataState> getCurrentUserFromServer() async{
+    final res = await api.get(ApiEndPoints.kGetCurrentUserUrl);
+    if(res is DataSuccess){
+      final UserModel parse = UserModel.fromJson(res.data.data);
+      await LocalDb.isar.writeTxn(() async => await LocalDb.isar.userModels.put(parse));
+      final dataRes = await LocalDb.isar.userModels.where().findAll();
+      return DataSuccess(dataRes.last);
+    }
+    else return DataFailed(res.error ?? "Some Erro Csmes in Get User");
   }
 
 }

@@ -5,4 +5,6 @@ import 'package:cafe_mobile/src/view/data/model/auth_model/auth_signup_req_model
 abstract class AuthRepo{
   Future<DataState> auth(AuthLoginReqModel? loginModel, AuthSignupReqModel? signupModel, bool isLogin);
   Future<bool> logout();
+  Future<DataState> currentUser(bool needGetFromServer);
+  Future<DataState> updateUser(String key, String value);
 }

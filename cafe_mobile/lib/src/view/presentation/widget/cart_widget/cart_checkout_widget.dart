@@ -1,10 +1,12 @@
 
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/view/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 Widget cartCheckoutWidget(BuildContext context)=> Container(
-      height: context.height*0.35,
+      height: context.height*0.4,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: const BorderRadius.only(
@@ -14,26 +16,41 @@ Widget cartCheckoutWidget(BuildContext context)=> Container(
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25, ),
-        child: Column(
-          children: [
-            SizedBox(height: context.height*0.03,),
-    
-            oneItemOfPaymentDescription(context, "Sub Total","\$72.00",false),
-            oneItemOfPaymentDescription(context, "Delivery","\$2.00",true),
-            oneItemOfPaymentDescription(context, "Total","\$74.00",false),
-            
-            SizedBox(height: context.height*0.04,),
-            ElevatedButton(
-              onPressed: (){}, 
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                minimumSize: Size(double.infinity, context.height*0.06),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)
-                )
-              ),
-              child: Text('Ceck out', style: Theme.of(context).textTheme.bodyLarge,))
-          ],
+        child: BlocBuilder<CartBloc, CartState>(
+          builder: (context, state) {
+            if(state is LoadingCartState)return const CircularProgressIndicator();
+            if(state is SuccessCartState){
+
+              final data = state.cartModels;
+              double total = data != null && data.isNotEmpty ?  
+                data.map((item) => item.howMuch.toDouble() * item.price!.toDouble()).reduce((value1, value2) => value1 + value2)
+                : 0;
+              
+              return Column(
+                children: [
+                  SizedBox(height: context.height*0.03,),
+                  
+                  oneItemOfPaymentDescription(context, "Sub Total","\$$total",false),
+                  oneItemOfPaymentDescription(context, "Delivery","\$2.00",true),
+                  oneItemOfPaymentDescription(context, "Total","\$${total+2.0}",false),
+                  
+                  SizedBox(height: context.height*0.03,),
+                  ElevatedButton(
+                    onPressed: (){}, 
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      minimumSize: Size(double.infinity, context.height*0.06),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      )
+                    ),
+                    child: Text('Ceck out', style: Theme.of(context).textTheme.bodyLarge,))
+                ],
+              );
+            }
+            if(state is FailCartState)return Text(state.error);
+            return Container();
+          },
         ),
       ),
     );
