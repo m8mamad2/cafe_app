@@ -42,6 +42,7 @@ class SplashScreen extends StatelessWidget {
       hasInternet =  result.isNotEmpty && result[0].rawAddress.isNotEmpty;
       if(hasInternet){
         String? isAuth = await GetToken.getToken();
+        // ignore: use_build_context_synchronously
         await Future.delayed(const Duration(seconds: 2),()=> context.navigateReplacement(isAuth != null ? const MainScreen() : const AuthScreen()));
         return true;
       }

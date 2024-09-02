@@ -1,5 +1,5 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
-import 'package:cafe_mobile/src/core/utils/error_dialog.dart';
+import 'package:cafe_mobile/src/core/utils/dialogs.dart';
 import 'package:cafe_mobile/src/view/data/model/auth_model/auth_login_req_model.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/page/home_screen.dart';

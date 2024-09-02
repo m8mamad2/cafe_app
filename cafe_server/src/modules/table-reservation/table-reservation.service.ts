@@ -2,6 +2,7 @@ import { TableReservationUpdateDto } from './dta/table-reservation-update.dto';
 import { DatabaseService } from './../../core/database/database.service';
 import { Prisma } from '@prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class TableReservationService {
@@ -29,6 +30,7 @@ export class TableReservationService {
     
     async update(tableReservationDto :TableReservationUpdateDto){
         try{
+            
             await this.databaseService.tableReservation.update({
                 where: { id: tableReservationDto.id },
                 data:  {
@@ -40,6 +42,7 @@ export class TableReservationService {
             return { res: 'ok' }
         }
         catch(e){
+            console.log(e);
             throw new BadRequestException()
         }
     }   
@@ -54,4 +57,19 @@ export class TableReservationService {
         }
     }
 
+    @Cron(CronExpression.EVERY_DAY_AT_1PM)
+    async deleteEndOfDay(){
+        try{
+            await this.databaseService.tableReservation.updateMany({ 
+                data:{ is_reserver: false }
+            });
+        }
+        catch(e){
+            console.log(e);
+        }
+    }
+
  }
+
+
+ 

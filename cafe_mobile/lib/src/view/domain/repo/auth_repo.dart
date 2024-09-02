@@ -6,5 +6,6 @@ abstract class AuthRepo{
   Future<DataState> auth(AuthLoginReqModel? loginModel, AuthSignupReqModel? signupModel, bool isLogin);
   Future<bool> logout();
   Future<DataState> currentUser(bool needGetFromServer);
-  Future<DataState> updateUser(String key, String value);
+  // Future<DataState> updateUser(String key, String value);
+  Future<DataState> updateUser(Map<String, dynamic> data);
 }

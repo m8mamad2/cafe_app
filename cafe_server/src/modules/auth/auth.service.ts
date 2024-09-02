@@ -39,30 +39,30 @@ export class AuthService {
     try {
       const password = await bcrypt.hash(authModel.password, 10);
       const res = await this.databaseService.user.create({
-        data: { ...authModel, password: password },
+        data: { ...authModel, password: password, address: authModel.address ?? [] },
       });
       const payload = { sub: res.id, username: res.userName };
       const token = await this.jwtService.signAsync(payload);
       return { ...res, password: undefined, access_token: token, localId: res.id };
     }
     catch (e) {
+      console.log(e)
       throw new HttpException(e, HttpStatus.BAD_REQUEST);
     }
 
   }
 
-  async updateUser(updateModel: Prisma.UserCreateInput , @Request() req){
+  async updateUser(updateModel: Prisma.UserCreateInput ,@Request() req){
     try{
       const user = req.user;
-      // const currentData = await this.databaseService.user.findFirst({ where: { id: user.sub } })
       await this.databaseService.user.update({
         where: { id: user.sub },
         data: updateModel
-        // data:  { ...currentData , updateModel.key : updateModel.value}
       });
       return { msg: "ok" };
     }
     catch(e){
+      console.log(e);
       throw new BadRequestException()
     }
   }
@@ -78,6 +78,15 @@ export class AuthService {
       throw new BadRequestException()
     }
   }
+
+  async getAll(){
+    return await this.databaseService.user.findMany();
+  }
+
+  async deleteAll(){
+    return await this.databaseService.user.deleteMany();
+  }
+
 
 }
 

@@ -18,6 +18,6 @@ final List<BottomNavigationItem> bottomNavigationBarItmes =  [
     BottomNavigationItem( 0 ,const HomeScreen() , "", Icons.home),
     BottomNavigationItem( 1 ,const FavoriteScreen() , "", Icons.favorite),
     BottomNavigationItem( 2 ,const HomeScreen() , "reserve", Icons.favorite),
-    BottomNavigationItem( 3 ,const CartScreen() , "", Icons.shop),
+    BottomNavigationItem( 3 ,const CartScreen() , "", Icons.shopping_cart),
     BottomNavigationItem( 4 ,const ProfileScreen() , "", Icons.person),
 ];

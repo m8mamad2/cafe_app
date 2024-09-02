@@ -21,7 +21,7 @@ class ChatReceiverBubbleWidget extends StatelessWidget {
                   horizontal: context.width*0.03,
                   vertical: context.width*0.02),
                 decoration:  BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                  color: Theme.of(context).primaryColor.withOpacity(0.6),
                   borderRadius:const BorderRadius.only(
                     topRight:Radius.circular(8) ,bottomRight: Radius.circular(8),
                     topLeft: Radius.circular(14),bottomLeft: Radius.circular(14)
@@ -33,7 +33,7 @@ class ChatReceiverBubbleWidget extends StatelessWidget {
                   children: [
                     Text(
                       receiverMessage,
-                      style:Theme.of(context).textTheme.titleLarge,
+                      style:Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 14,fontWeight: FontWeight.w500),
                       textAlign: TextAlign.right,
                     ),
                     Container(

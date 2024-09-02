@@ -24,7 +24,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
      });
 
     on<AddFavoriteEvent>((event, emit) async{
-      emit(LoadingFavoriteState());
       try{
         await usecase.addToFavorite(event.favoriteModel)
           .then((value) => value is DataSuccess
@@ -46,7 +45,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
      });
 
     on<DeleteFavoriteEvent>((event, emit) async{
-      emit(LoadingFavoriteState());
       try{
         await usecase.removeFromFavorite(event.id)
           .then((value) => value is DataSuccess

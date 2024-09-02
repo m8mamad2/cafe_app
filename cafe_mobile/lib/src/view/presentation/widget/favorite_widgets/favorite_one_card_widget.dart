@@ -27,7 +27,7 @@ Widget favoriteOneCardWidget(BuildContext context, FavoriteModel favoriteModel) 
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                    Text(
-                    favoriteModel.title?.substring(0,15) ?? '',
+                    favoriteModel.title?.substring(0,9) ?? '',
                     style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                   Text(
@@ -49,7 +49,6 @@ Widget favoriteOneCardWidget(BuildContext context, FavoriteModel favoriteModel) 
                       ),
                       InkWell(
                         onTap: () {
-                          print('_______--)');
                           context.read<FavoriteBloc>().add(DeleteFavoriteEvent(favoriteModel.id!));
                         },
                         child: Container(

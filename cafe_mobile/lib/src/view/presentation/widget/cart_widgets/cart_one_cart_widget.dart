@@ -32,7 +32,7 @@ Widget cartOneCardWidget(BuildContext context, CartModel cartModel)=> InkWell(
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(cartModel.title?.substring(0,15) ?? '',style: const TextStyle(color: Colors.white,fontSize: 14),),
+                        Text(cartModel.title?.substring(0,9) ?? '',style: const TextStyle(color: Colors.white,fontSize: 14),),
                         Text(cartModel.description?.substring(0,28) ?? '',style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white60),),]),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -69,7 +69,9 @@ Widget cartOneCardWidget(BuildContext context, CartModel cartModel)=> InkWell(
                               borderRadius: BorderRadius.circular(10)
                             ),
                             child: InkWell(
-                              onTap:()=> context.read<CartBloc>().add(IncCartEvent(cartModel.localId, false)) ,
+                              onTap:()=> cartModel.howMuch <= 1 
+                                ? context.read<CartBloc>().add(DeleteFromCartsEvent(cartModel.id!))
+                                : context.read<CartBloc>().add(IncCartEvent(cartModel.localId, false)) ,
                               child: const Icon(Icons.remove, color: Colors.white)),
                           ),
                           

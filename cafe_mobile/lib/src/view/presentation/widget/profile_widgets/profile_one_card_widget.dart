@@ -1,8 +1,8 @@
 
-import 'package:cafe_mobile/src/core/constans/bottom_navigation_bar_items.dart';
 import 'package:cafe_mobile/src/core/constans/value_notifier.dart';
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/user_bloc/user_bloc.dart';
+import 'package:cafe_mobile/src/view/presentation/page/order_screen.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/profile_widgets/profile_update_address_map_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +11,8 @@ Widget profileOneCardWidget(BuildContext context, String title, String subTitle,
 
     InkWell(
       onTap: key.isEmpty 
-        ? ()=> bottomNavigationIndex.value = 1
+        // ? ()=> bottomNavigationIndex.value = 1
+        ? ()=> context.navigate( const OrderScreen() )
         : key.contains('address')
           ? ()=> context.navigate( const ProfileUpdateAddressMapWidget() )
           : ()=> changeProfileDetailBottomShet(context, title, key),
@@ -96,8 +97,8 @@ Future changeProfileDetailBottomShet(BuildContext context,String lable, String k
               },
               builder: (context, state) {
                 if(state is LoadingUserState)return button(context, (){}, true);
-                if(state is SuccessUserState)return button(context, ()=> context.read<UserBloc>().add(UpdateUserEvent(key, controller.text)), false);
-                if(state is FailUserState)return    button(context, ()=> context.read<UserBloc>().add(UpdateUserEvent(key, controller.text)), false, true, state.error);
+                if(state is SuccessUserState)return button(context, ()=> context.read<UserBloc>().add(UpdateUserEvent({ key: controller.text })), false);
+                if(state is FailUserState)return    button(context, ()=> context.read<UserBloc>().add(UpdateUserEvent({ key: controller.text })), false, true, state.error);
                 return Container();
               },
               
@@ -124,4 +125,4 @@ Widget button(BuildContext context, VoidCallback onPress, bool isLoading, [bool?
       ? const CircularProgressIndicator(color: Colors.white,)
       : isFail ?? false  
         ? Text( error!, style: const TextStyle(color: Colors.white))
-        : const Text('Taht si Fine', style: TextStyle(color: Colors.white),));
+        : const Text('Ok', style: TextStyle(color: Colors.white),));

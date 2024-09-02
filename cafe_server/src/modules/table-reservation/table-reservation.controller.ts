@@ -19,7 +19,7 @@ export class TableReservationController {
     }
 
     @Put('/update')
-    update(tableModel: TableReservationUpdateDto){
+    update(@Body() tableModel: TableReservationUpdateDto){
         return this.tableReservationService.update(tableModel)
     }
 
@@ -27,5 +27,4 @@ export class TableReservationController {
     clear(){
         return this.tableReservationService.clear()
     }
-    
 }

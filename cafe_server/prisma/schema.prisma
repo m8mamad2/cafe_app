@@ -32,24 +32,20 @@ model User {
   userName    String  @unique
   name        String?
   family      String?
-  address     String?
+  address_name   String?  
+  address     Float[]
   phoneNumber String? @unique
 }
 
 model Message {
   id        Int         @id @default(autoincrement())
   data      String
-  type      MessageType @default(IMAGE)
+  type      String @default("Message")
   sender    String
   receiver  String
   createdAt DateTime    @default(now())
 }
 
-enum MessageType {
-  MESSAGE
-  VOICE
-  IMAGE
-}
 
 model TableReservation {
   id            Int     @id @default(autoincrement())
@@ -58,4 +54,14 @@ model TableReservation {
   is_reserver   Boolean
   reserved_date String
   reserved_hour String
+}
+
+model Order {
+  id          Int       @id @default(autoincrement())
+  userId      Int? 
+  title       String
+  description String
+  images      String[]
+  price       Int
+  isComplete  Boolean @default(false)
 }

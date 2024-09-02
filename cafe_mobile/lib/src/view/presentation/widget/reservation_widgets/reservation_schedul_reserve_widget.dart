@@ -1,7 +1,8 @@
 import 'package:cafe_mobile/src/core/constans/value_notifier.dart';
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
-import 'package:cafe_mobile/src/core/widgets/is_exist_in_cart_widget.dart';
-import 'package:cafe_mobile/src/view/data/model/reservation_model.dart';
+import 'package:cafe_mobile/src/core/utils/dialogs.dart';
+import 'package:cafe_mobile/src/core/utils/snackbar.dart';
+import 'package:cafe_mobile/src/view/data/model/reservation_model/reservation_req_model.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/reservation_bloc/reservation_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +50,7 @@ class ReservationScheduleReserveWidgetState extends State<ReservationScheduleRes
   
   @override
   Widget build(BuildContext context) {
-    return  Align(
+    return Align(
             alignment: Alignment.bottomCenter,
             child: Container(
               height: context.height*0.25,
@@ -101,34 +102,47 @@ class ReservationScheduleReserveWidgetState extends State<ReservationScheduleRes
                     ],
                   ),
                   ValueListenableBuilder(
-                    valueListenable: selectedTable,
-                    builder: (context, value, child) => InkWell(
-                      onTap: (){ 
-                        if(value != null){
-                          String date = '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}';
-                          String hour = '${selectedTime.hour}:${selectedTime.minute}';
-                          String table=  value.toString();
-
-                          ReservationModel reservationModel = ReservationModel(table,6,true,date,hour);
-                          context.read<ReservationBloc>().add(CreateTableReservationEvent(reservationModel));
-                        }
-                        else ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('first choese table')));
+                    valueListenable: selectedTableId,
+                    builder: (context, value, child) => BlocConsumer<ReservationBloc, ReservationState>(
+                      listener: (context, state) async {
+                        if(state is SuccessCreateTableState)await successDialog(context, "Reservation was Success !");
                       },
-                      child: Container(
-                        width: context.width,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Theme.of(context).primaryColor
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text('Book Table'),
-                      ),
-                    ),
-                  )
+                      builder: (context, state) {
+                        
+                        void onTap (){ 
+                          if(value != null){
+                            String date = '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}';
+                            String hour = '${selectedTime.hour}:${selectedTime.minute}';
+                            ReservationReqModel reservationModel = ReservationReqModel(value, true, date, hour );
+                            context.read<ReservationBloc>().add(CreateTableReservationEvent(reservationModel));
+                          }
+                          else showSnackBar(context, "Please First Choes a Table");
+                        }
+
+                        if(state is LoadingForCreateTableReservationState)return button(context, (){}, true);
+                        if(state is SuccessReservationState)return button(context, onTap, false);
+                        if(state is FailReservationState)return button(context, onTap, false, state.error);
+                        return Container();
+                      },
+                   )
+                  ),
                 ],
               ),
             ),
           );
   }
 }
+
+Widget button(BuildContext context, VoidCallback onTap, bool isLoading,[String? error])=> InkWell(
+  onTap: onTap,
+  child: Container(
+    width: context.width,
+    height: 45,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(15),
+      color: Theme.of(context).primaryColor
+    ),
+    alignment: Alignment.center,
+    child: isLoading ? const CircularProgressIndicator() :Text( error ?? 'Book Table'),
+  ),
+);

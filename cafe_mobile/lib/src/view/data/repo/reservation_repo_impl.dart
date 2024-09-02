@@ -1,7 +1,8 @@
 import 'package:cafe_mobile/src/core/data_source/remote/api_configure.dart';
 import 'package:cafe_mobile/src/core/data_source/remote/api_end_points.dart';
 import 'package:cafe_mobile/src/core/utils/data_respone_state.dart';
-import 'package:cafe_mobile/src/view/data/model/reservation_model.dart';
+import 'package:cafe_mobile/src/view/data/model/reservation_model/reservation_model.dart';
+import 'package:cafe_mobile/src/view/data/model/reservation_model/reservation_req_model.dart';
 import 'package:cafe_mobile/src/view/domain/repo/reservation_repo.dart';
 
 class ReservationRepoImpl extends ReservationRepo{
@@ -20,8 +21,10 @@ class ReservationRepoImpl extends ReservationRepo{
   }
 
   @override
-  Future<DataState> reserveTable(ReservationModel reservationModel)async {
-    return await api.post( ApiEndPoints.kGetAllReservationUrl, reservationModel.toJson() );
+  Future<DataState> reserveTable(ReservationReqModel reservationModel)async {
+    final res =  await api.put( ApiEndPoints.kCreateReservationTableUrl, reservationModel.toJson() );
+    if(res is DataSuccess) return getAllTable();
+    else return res;
   }
 
 }

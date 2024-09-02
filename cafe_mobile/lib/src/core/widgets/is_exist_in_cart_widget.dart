@@ -32,7 +32,6 @@ class _IsExistInCartWidgetState extends State<IsExistInCartWidget> {
                 child: widget.isExistWidget, ) ;
         }
         if(state is FailCartState) {
-          print('Ero is -> ${state.error}');
           return  Container(width: 10,height: 10,color: Colors.red,);
         }
         return Container();

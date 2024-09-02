@@ -1,4 +1,6 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/core/shimmer/shimmers_widgets/favorite_shimmer.dart';
+import 'package:cafe_mobile/src/core/widgets/empty_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/favorite_bloc/favorite_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/favorite_widgets/favorite_one_card_widget.dart';
 import 'package:flutter/material.dart';
@@ -51,30 +53,34 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             Expanded(
               child: BlocBuilder<FavoriteBloc, FavoriteState>(
                 builder: (context, state) {
-                  if(state is LoadingFavoriteState) return const CircularProgressIndicator(color: Colors.white,);
+                  if(state is LoadingFavoriteState) return favoriteShimmer(context);
                   if(state is SuccessFavoriteState){
                     final data = state.favoriteData;
                     return data != null && data.isNotEmpty 
-                      ? GridView.builder(
-                          itemCount: data.length,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 10,
-                                  childAspectRatio: 0.6,
-                                  crossAxisCount: 2),
-                          itemBuilder: (context, index) {
-                            double topPadding = index % 2 == 0 ? 10.0 : 20.0;
-                            double bottomPadding = index % 3 == 0 ? 20 : 10.0; 
-                            return Padding(
-                                padding: EdgeInsets.only(bottom: bottomPadding, top: topPadding),
-                                child: favoriteOneCardWidget(context, data[index]));
-                          })
-                      : const Center(child: Text('Empty'));
+                      ? Container(
+                        margin: const EdgeInsets.only(bottom: 70),
+                        child: GridView.builder(
+                            itemCount: data.length,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisSpacing: 10,
+                                    childAspectRatio: 0.6,
+                                    crossAxisCount: 2),
+                            itemBuilder: (context, index) {
+                              double topPadding = index % 2 == 0 ? 10.0 : 20.0;
+                              double bottomPadding = index % 3 == 0 ? 20 : 10.0; 
+                              return Padding(
+                                  padding: EdgeInsets.only(bottom: bottomPadding, top: topPadding),
+                                  child: favoriteOneCardWidget(context, data[index]));
+                            }),
+                      )
+                      : emptyWidget(context, (){},false, 'The Favorite is Empty');
                   };
-                  if(state is FailFavoriteState) return Text(state.error, style: TextStyle(color: Colors.white),);
+                  if(state is FailFavoriteState) return emptyWidget(context, (){}, true ,state.error);
                   return Container();
                 },
               ),
-            )
+            ),
+
           ],
         ),
       ),

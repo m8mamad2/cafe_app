@@ -51,8 +51,8 @@ class AuthRepoImpl extends AuthRepo {
   }
 
   @override
-  Future<DataState> updateUser(String key, String value)async{
-    final res = await api.put(ApiEndPoints.kUpdateUserUrl, { key: value });
+  Future<DataState> updateUser(Map<String, dynamic> data)async{
+    final res = await api.put(ApiEndPoints.kUpdateUserUrl, data);
     if(res is DataSuccess) return await getCurrentUserFromServer();
     else return res;
   }

@@ -12,6 +12,11 @@ final class SuccessUserState extends UserState {
   SuccessUserState(this.userModel);
 }
 
+final class SuccessGetAddressUserState extends UserState {
+  final GeocodingModel geocodingModel;
+  SuccessGetAddressUserState(this.geocodingModel);
+}
+
 final class FailUserState extends UserState {
   final String error;
   FailUserState(this.error);

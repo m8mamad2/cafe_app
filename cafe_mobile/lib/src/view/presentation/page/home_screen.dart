@@ -1,4 +1,6 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/core/shimmer/shimmers_widgets/home_shimmer.dart';
+import 'package:cafe_mobile/src/core/widgets/empty_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/food_bloc/food_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/user_bloc/user_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/home_widgets/home_appbar_widget.dart';
@@ -47,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               BlocBuilder<FoodBloc, FoodState>(
                 builder: (context, state) {
-                  if(state is LoadingFoodState)return const CircularProgressIndicator();
+                  if(state is LoadingFoodState)return  homeShimmer(context);
                   if(state is SuccessFoodState){
                     return Column(
                       children: [
@@ -57,9 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     );
                   }
-                  if(state is FailFoodState)return InkWell(
-                    onTap: ()=>context.read<FoodBloc>().add(GetAllFoodEvent()),
-                    child: Text("Fail Man ${state.error}", style: const TextStyle(color: Colors.white),));
+                  if(state is FailFoodState)return emptyWidget(context, ()=>context.read<FoodBloc>().add(GetAllFoodEvent()), true,state.error);
                   return Container();
                 },
               )

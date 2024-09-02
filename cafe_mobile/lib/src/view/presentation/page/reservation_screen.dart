@@ -1,5 +1,7 @@
+
 import 'package:cafe_mobile/src/core/constans/value_notifier.dart';
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/core/shimmer/shimmers_widgets/reservation_shimmer.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/reservation_bloc/reservation_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/reservation_widgets/reservation_appbar_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/reservation_widgets/reservation_background_widget.dart';
@@ -45,51 +47,43 @@ class _ReservationScreenState extends State<ReservationScreen> {
     super.dispose();
   }
   
-  
+
   @override
   Widget build(BuildContext context,) {
     return PopScope(
-      onPopInvokedWithResult: (didPop, result) => selectedTable.value = null,
+      onPopInvokedWithResult: (didPop, result) => selectedTableId.value = null,
       child: Scaffold(
         body: Stack(
           children: [
             reservationBackgroundsWidget(context, _scrollController1),
             BlocBuilder<ReservationBloc, ReservationState>(
               builder: (context, state) {
-                if(state is LoadingReservationState)return CircularProgressIndicator();
+                if(state is LoadingReservationState)return reservationShimmer(context);
                 if(state is SuccessReservationState){
                   
                   final data = state.reservationModel;
+                  data.sort((a, b) => int.parse(a.table).compareTo(int.parse(b.table)));
       
                   return  ValueListenableBuilder<int?>(
-                    valueListenable: selectedTable,
+                    valueListenable: selectedTableId,
                     builder:(context, value, child) => Container(
                         height: context.height*0.75,  
                         padding: EdgeInsets.only(top: context.height *0.1),
                         child: GridView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: 6,
+                          itemCount: data.length,
                           reverse: true,
                           controller: _scrollController2,
                           padding: const EdgeInsets.only(top: 20),
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(mainAxisExtent: context.width * 0.45,crossAxisCount: 2), 
                           itemBuilder: (context, index) {
-      
-                             
-                            if(index < data.length) 
-                              return int.parse(data[index].table) == index 
-                                ? reservationOneTableWidget(context, 0, 3, index, true, true)
+                            return data[index].is_reserver 
+                                ? reservationOneTableWidget(context, true, true, data[index].id )
                                 : value != null  
-                                  ? value == index 
-                                    ? reservationOneTableWidget(context, 0, 3, index, true, false)
-                                    : reservationOneTableWidget(context, 0, 3, index, false,false)
-                                  : reservationOneTableWidget(context, 0, 3, index, false, false); 
-      
-                            else return value != null  
-                                ? value == index 
-                                  ? reservationOneTableWidget(context, 0, 3, index, true, false)
-                                  : reservationOneTableWidget(context, 0, 3, index, false,false)
-                                : reservationOneTableWidget(context, 0, 3, index, false, false); 
+                                  ? value == data[index].id 
+                                    ? reservationOneTableWidget(context,  true, false, data[index].id)
+                                    : reservationOneTableWidget(context,  false,false, data[index].id)
+                                  : reservationOneTableWidget(context,    false, false, data[index].id); 
                               
                         }),
                       ),

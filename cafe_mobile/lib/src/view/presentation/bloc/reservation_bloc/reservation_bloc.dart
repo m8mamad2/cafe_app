@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cafe_mobile/src/core/utils/data_respone_state.dart';
-import 'package:cafe_mobile/src/view/data/model/reservation_model.dart';
+import 'package:cafe_mobile/src/view/data/model/reservation_model/reservation_model.dart';
+import 'package:cafe_mobile/src/view/data/model/reservation_model/reservation_req_model.dart';
 import 'package:cafe_mobile/src/view/domain/use_case/reservation_usecase.dart';
 import 'package:meta/meta.dart';
 
@@ -23,12 +24,16 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     });
 
     on<CreateTableReservationEvent>((event, emit) async{
-      emit(LoadingReservationState());
+      emit(LoadingForCreateTableReservationState());
       try{
-        await usecase.reserveTable(event.reservationModel).then((value) => 
-          value is DataSuccess 
-            ? emit(SuccessCreateTableReservationState())
-            : emit(FailReservationState(value.error ?? 'Tere is Error')));
+        await usecase.reserveTable(event.reservationModel)
+          .then((value) {
+            if(value is DataSuccess){
+              emit(SuccessCreateTableState());
+              emit(SuccessReservationState(value.data));
+            }
+            else FailReservationState(value.error ?? 'Tere is Error');
+          });
       }
       catch(e){ emit(FailReservationState(e.toString())); }
     });

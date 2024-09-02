@@ -1,8 +1,11 @@
 
+import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/core/shimmer/shimmers_widgets/locatino_map_shimmer.dart';
 import 'package:cafe_mobile/src/core/utils/locaint_service.dart';
+import 'package:cafe_mobile/src/view/presentation/bloc/user_bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
 
 class ProfileUpdateAddressMapWidget extends StatefulWidget {
@@ -31,9 +34,14 @@ class _ProfileUpdateAddressMapWidgetState extends State<ProfileUpdateAddressMapW
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color:Colors.white),
+          onPressed: context.navigateBack,
+        ),
+      ),
       body: isLoading
-        ? const Center(child: CircularProgressIndicator(),)
+        ? mapLocationShimmer(context)
         : FlutterMap(
           mapController: controller,
           options: MapOptions(
@@ -60,20 +68,39 @@ class _ProfileUpdateAddressMapWidgetState extends State<ProfileUpdateAddressMapW
               padding: const EdgeInsets.all(10.0),
               child: Align(
                 alignment: Alignment.bottomRight,
-                child: FloatingActionButton(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: const Icon(Icons.check),
-                  onPressed: ()async{
-                    print(latLng.latitude);
-                    print(latLng.longitude);
-                    List<Placemark> placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
-                    print(placemarks.toString());
-                    print(placemarks.length.toString());
-                    // for(var i in placemarks)log(i.street ?? '');
-                  }),
+                child: BlocConsumer<UserBloc, UserState>(
+                  listener: (context, state) {
+                    if(state is SuccessGetAddressUserState){
+                      final data = state.geocodingModel.address;
+                      final address = '${data.country} ${data.city}, ${data.road}';
+                      context.read<UserBloc>().add(UpdateUserEvent({ 'address_name': address , 'address': [latLng.latitude,latLng.longitude]}));
+                    }
+                    if(state is SuccessUserState)context.navigateBack();
+                  },
+                  builder: (context, state) {
+                    onTap()async{
+                      context.read<UserBloc>().add(GetAddressUserEvent(latLng.latitude,latLng.longitude));
+                      // List<Placemark> placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+                      // print(placemarks.toString());
+                      // print(placemarks.length.toString());
+                      // for(var i in placemarks)log(i.street ?? '');
+                    }
+
+                    if(state is LoadingUserState) return button(context, true, (){});
+                    if(state is SuccessUserState) return button(context, false, onTap);
+                    if(state is FailUserState)return button(context, false, onTap);
+                    return Container();
+                  },
+                )
               ),
             )
       ])
+    
     );
   }
 }
+
+button(BuildContext context, bool isLoading, VoidCallback onTap) => FloatingActionButton(
+  backgroundColor: Theme.of(context).primaryColor,
+  onPressed: onTap,
+  child: isLoading ? const CircularProgressIndicator(color: Colors.black,) : const Icon(Icons.check));

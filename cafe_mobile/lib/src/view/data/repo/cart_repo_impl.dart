@@ -18,6 +18,8 @@ class CartRepoImpl extends CartRepo{
   @override
   Future<DataState> addToCart(CartModel cartModel) async{
     try{
+      cartModel.howMuch = 1;
+      print(cartModel.howMuch );
       await LocalDb.isar.writeTxn(() async=> await LocalDb.isar.cartModels.put(cartModel));
       final res = await LocalDb.isar.cartModels.where().findAll();
       return DataSuccess(res);
@@ -67,4 +69,5 @@ class CartRepoImpl extends CartRepo{
       print("erro in REpo ${e.toString()}");
       return const DataFailed('error'); }
   }
+
 }

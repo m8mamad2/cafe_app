@@ -1,4 +1,6 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/core/shimmer/shimmers_widgets/cart_shimmer.dart';
+import 'package:cafe_mobile/src/core/widgets/empty_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/cart_widget/cart_checkout_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/cart_widgets/cart_one_cart_widget.dart';
@@ -55,7 +57,7 @@ class _CartScreenState extends State<CartScreen> {
           Expanded(
             child: BlocBuilder<CartBloc, CartState>(
               builder: (context, state) {
-                if(state is LoadingCartState)return const CircularProgressIndicator();
+                if(state is LoadingCartState)return cartShimmer(context);
                 if(state is SuccessCartState){
                   final data = state.cartModels;
                   return data != null && data.isNotEmpty
@@ -64,9 +66,9 @@ class _CartScreenState extends State<CartScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         itemBuilder: (context, index) => cartOneCardWidget(context, data[index]),
                       )
-                    : const Text('Empty', style: TextStyle(color: Colors.white),);
+                    : emptyWidget(context, (){}, false, "The Cart is Empty :)", false);
                 }
-                if(state is FailCartState)return Text(state.error, style: const TextStyle(color: Colors.white),);
+                if(state is FailCartState)return Expanded(child: emptyWidget(context, (){}, true, state.error ));
                 return Container();
               },
             ),

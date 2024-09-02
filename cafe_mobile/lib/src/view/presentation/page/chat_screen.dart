@@ -1,6 +1,9 @@
+import 'package:cafe_mobile/src/core/data_source/remote/web_scoket/chat_web_socket.dart';
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/view/data/model/message_model.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/chat_widgets/chat_list_view_builder_widget.dart';
 import 'package:flutter/material.dart';
+
 
 
 
@@ -16,11 +19,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> with TickerProviderStat
   final ScrollController scrollController = ScrollController();
   final FocusNode focusNode = FocusNode();
 
+  final ChatWebSocket chatWebSocket = ChatWebSocket();
+  List<MessageModel> messages = [];
   
   @override
   void initState() {
     super.initState();
-    if(scrollController.hasClients) scrollController.jumpTo(scrollController.position.maxScrollExtent);
+
+    if(mounted){
+      chatWebSocket.connecte();
+      chatWebSocket.onMessagesReceived = (List<MessageModel> message)=>setState(()=> messages = message);
+      chatWebSocket.onMessagesSend = (MessageModel message)=>setState(()=> messages.add(message) );
+      if(scrollController.hasClients) scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    }
   }
 
     
@@ -29,6 +40,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> with TickerProviderStat
     super.dispose();
     scrollController.dispose();
     messageController.dispose();
+    focusNode.dispose();
+    chatWebSocket.dispose();
   }
 
   
@@ -39,36 +52,44 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> with TickerProviderStat
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           leading: IconButton(
-            onPressed:(){},
-            icon:const Icon(Icons.arrow_back)
+            onPressed: context.navigateBack,
+            icon:const Icon(Icons.arrow_back, color: Colors.white,)
           ),
+          bottom: PreferredSize(
+            preferredSize: Size(context.width, context.height*0.013), 
+            child: Container(width: context.width,height: 7,color: Theme.of(context).primaryColor,)),
+          actions: [
+            Text('Admin', style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 14),),
+            Container(
+              margin: const EdgeInsets.only(right: 15,left: 10),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                shape: BoxShape.circle
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Icon(Icons.person_outlined, color: Theme.of(context).primaryColor,),
+              ),
+            ),
+          ],
         ),
         body: Column(
           
           children: [
 
-
-            //* messages
             Expanded(
-              child: ChatListViewBuilderWidget(scrollController: scrollController, focusNode: focusNode,)),
+              child: ChatListViewBuilderWidget(scrollController: scrollController, focusNode: focusNode,messages: messages,)),
 
             Container(
               width: context.width,
-              height: context.height*0.12,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              height: context.height*0.09,
+              padding: const EdgeInsets.symmetric(vertical: 10),
               decoration:BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
+                border: Border(top: BorderSide(color: Theme.of(context).primaryColor)),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10),
                   topRight: Radius.circular(10),
                 ),
-                boxShadow:const[
-                  BoxShadow(
-                    color: Colors.white12,
-                    offset: Offset( 0, -5),
-                    blurRadius: 10
-                  )
-                ]
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,38 +98,46 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> with TickerProviderStat
 
                   Container(
                       alignment: Alignment.center,
-                      height: context.height*0.08,
-                      width: context.width*0.75,
+                      width: context.width*0.82,
+                      margin: const EdgeInsets.only(left: 10),
                       child: TextField(
                         focusNode: focusNode,
                         controller: messageController,
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: 14),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           filled: true,
                           fillColor: Theme.of(context).cardColor,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Theme.of(context).cardColor)
-                          ),
+                          enabledBorder: messageTextFieldStyle(context),
+                          focusedBorder: messageTextFieldStyle(context),
+                          disabledBorder: messageTextFieldStyle(context),
+                          errorBorder: messageTextFieldStyle(context)
                         ),
                       ),
                     ),
 
-                  ElevatedButton(
-                    style:ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  InkWell(
+                    onTap: ()async{
+
+                      chatWebSocket.sendMessage(messageController.text.trim());
+                      messageController.clear();
+                      // final MessageData data = MessageData(messages: 'Ok Ok', time: '09:00', type: '', isMine: true);
+                      // messageList.add(data);
+                      // scrollController.animateTo( 0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut,);
+                      // messageController.text = '';
+                      // setState(() {});
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(right: 10 ),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Theme.of(context).primaryColor
                       ),
-                      minimumSize: Size(context.width *0.14, 50)
-                    ),
-                    onPressed: (){
-                      final MessageData data = MessageData(messages: 'Ok Ok', time: '09:00', type: '', isMine: true);
-                      messageList.add(data);
-                      scrollController.animateTo( 0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut,);
-                      messageController.text = '';
-                      setState(() {});
-                    }, 
-                    child: Icon(Icons.send))
+                      child: const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(Icons.send, color: Colors.white,),
+                      )),
+                  )
                 
                 ],
               ),
@@ -126,28 +155,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> with TickerProviderStat
 }
 
 
-
-
-class MessageData {
-  final String messages;
-  final String type;
-  final String time;
-  final bool isMine;
-  MessageData({
-      required this.messages,
-      required this.time,
-      required this.type,
-      required this.isMine
-    }
-  );
-}
-const String messageTwo = '''سلام وقتتون بخیر خسته نباشید''';
-const String messageOne = '''سلام وقتتون بخیر خسته نباشید''';
-const String messageLast = 'سلام ممنونبله میتونید در آپارتمان هم نگهداری کنید.';
-final messageList = [
-  MessageData(messages: 'Ok Ok', time: '09:00', type: '', isMine: true),
-  MessageData(messages: 'Ok 2', time: '09:00', type: '', isMine: false),
-  MessageData(messages: 'Ok 3', time: '09:00', type: '', isMine: false),
-  MessageData(messages: 'Ok 4', time: '09:00', type: '', isMine: true),
-];
-
+messageTextFieldStyle(BuildContext context)=> OutlineInputBorder(
+  borderRadius: BorderRadius.circular(10),
+  borderSide: BorderSide(color: Theme.of(context).cardColor)
+);

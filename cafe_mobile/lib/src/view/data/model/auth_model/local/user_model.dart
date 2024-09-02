@@ -22,7 +22,9 @@ class UserModel {
   
   late String? family;
   
-  late String? address;
+  late String? address_name;
+
+  late List<double>? address;
   
   late String? phoneNumber;
   
@@ -33,4 +35,3 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json)=> _$UserModelFromJson(json);
   Map<String, dynamic> toJson()=> _$UserModelToJson(this);
 }
-

@@ -90,7 +90,11 @@ class DetailsFoodAddButtonWidget extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10)
                                   ),
                                   child: InkWell(
-                                    onTap:()=> oneCartData != null ? context.read<CartBloc>().add(IncCartEvent(oneCartData.localId, false)) : null,
+                                    onTap:()=> oneCartData != null 
+                                      ? oneCartData.howMuch <= 1 
+                                        ? context.read<CartBloc>().add(DeleteFromCartsEvent(oneCartData.id!))
+                                        : context.read<CartBloc>().add(IncCartEvent(oneCartData.localId, false))
+                                      : null,
                                     child: const Icon(Icons.remove, color: Colors.white)),
                                 ),
                                 

@@ -25,40 +25,45 @@ const UserModelSchema = CollectionSchema(
     r'address': PropertySchema(
       id: 1,
       name: r'address',
+      type: IsarType.doubleList,
+    ),
+    r'address_name': PropertySchema(
+      id: 2,
+      name: r'address_name',
       type: IsarType.string,
     ),
     r'email': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'email',
       type: IsarType.string,
     ),
     r'family': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'family',
       type: IsarType.string,
     ),
     r'id': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'id',
       type: IsarType.long,
     ),
     r'name': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'name',
       type: IsarType.string,
     ),
     r'password': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'password',
       type: IsarType.string,
     ),
     r'phoneNumber': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'userName': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'userName',
       type: IsarType.string,
     )
@@ -91,6 +96,12 @@ int _userModelEstimateSize(
   }
   {
     final value = object.address;
+    if (value != null) {
+      bytesCount += 3 + value.length * 8;
+    }
+  }
+  {
+    final value = object.address_name;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -141,14 +152,15 @@ void _userModelSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.access_token);
-  writer.writeString(offsets[1], object.address);
-  writer.writeString(offsets[2], object.email);
-  writer.writeString(offsets[3], object.family);
-  writer.writeLong(offsets[4], object.id);
-  writer.writeString(offsets[5], object.name);
-  writer.writeString(offsets[6], object.password);
-  writer.writeString(offsets[7], object.phoneNumber);
-  writer.writeString(offsets[8], object.userName);
+  writer.writeDoubleList(offsets[1], object.address);
+  writer.writeString(offsets[2], object.address_name);
+  writer.writeString(offsets[3], object.email);
+  writer.writeString(offsets[4], object.family);
+  writer.writeLong(offsets[5], object.id);
+  writer.writeString(offsets[6], object.name);
+  writer.writeString(offsets[7], object.password);
+  writer.writeString(offsets[8], object.phoneNumber);
+  writer.writeString(offsets[9], object.userName);
 }
 
 UserModel _userModelDeserialize(
@@ -159,15 +171,16 @@ UserModel _userModelDeserialize(
 ) {
   final object = UserModel();
   object.access_token = reader.readStringOrNull(offsets[0]);
-  object.address = reader.readStringOrNull(offsets[1]);
-  object.email = reader.readStringOrNull(offsets[2]);
-  object.family = reader.readStringOrNull(offsets[3]);
-  object.id = reader.readLongOrNull(offsets[4]);
+  object.address = reader.readDoubleList(offsets[1]);
+  object.address_name = reader.readStringOrNull(offsets[2]);
+  object.email = reader.readStringOrNull(offsets[3]);
+  object.family = reader.readStringOrNull(offsets[4]);
+  object.id = reader.readLongOrNull(offsets[5]);
   object.localId = id;
-  object.name = reader.readStringOrNull(offsets[5]);
-  object.password = reader.readStringOrNull(offsets[6]);
-  object.phoneNumber = reader.readStringOrNull(offsets[7]);
-  object.userName = reader.readStringOrNull(offsets[8]);
+  object.name = reader.readStringOrNull(offsets[6]);
+  object.password = reader.readStringOrNull(offsets[7]);
+  object.phoneNumber = reader.readStringOrNull(offsets[8]);
+  object.userName = reader.readStringOrNull(offsets[9]);
   return object;
 }
 
@@ -181,20 +194,22 @@ P _userModelDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleList(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readLongOrNull(offset)) as P;
-    case 5:
       return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readLongOrNull(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -465,20 +480,193 @@ extension UserModelQueryFilter
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressEqualTo(
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      addressElementEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'address',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      addressElementGreaterThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'address',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      addressElementLessThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'address',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      addressElementBetween(
+    double lower,
+    double upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'address',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      addressLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'address',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'address',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      addressIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'address',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      addressLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'address',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      addressLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'address',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      addressLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'address',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      address_nameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'address_name',
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      address_nameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'address_name',
+      ));
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> address_nameEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'address',
+        property: r'address_name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressGreaterThan(
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      address_nameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -486,14 +674,15 @@ extension UserModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'address',
+        property: r'address_name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressLessThan(
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      address_nameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -501,14 +690,14 @@ extension UserModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'address',
+        property: r'address_name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressBetween(
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> address_nameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -517,7 +706,7 @@ extension UserModelQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'address',
+        property: r'address_name',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -527,70 +716,72 @@ extension UserModelQueryFilter
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressStartsWith(
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      address_nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'address',
+        property: r'address_name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressEndsWith(
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      address_nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'address',
+        property: r'address_name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      address_nameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'address',
+        property: r'address_name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressMatches(
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> address_nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'address',
+        property: r'address_name',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterFilterCondition> addressIsEmpty() {
+  QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
+      address_nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'address',
+        property: r'address_name',
         value: '',
       ));
     });
   }
 
   QueryBuilder<UserModel, UserModel, QAfterFilterCondition>
-      addressIsNotEmpty() {
+      address_nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'address',
+        property: r'address_name',
         value: '',
       ));
     });
@@ -1624,15 +1815,15 @@ extension UserModelQuerySortBy on QueryBuilder<UserModel, UserModel, QSortBy> {
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterSortBy> sortByAddress() {
+  QueryBuilder<UserModel, UserModel, QAfterSortBy> sortByAddress_name() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address', Sort.asc);
+      return query.addSortBy(r'address_name', Sort.asc);
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterSortBy> sortByAddressDesc() {
+  QueryBuilder<UserModel, UserModel, QAfterSortBy> sortByAddress_nameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address', Sort.desc);
+      return query.addSortBy(r'address_name', Sort.desc);
     });
   }
 
@@ -1735,15 +1926,15 @@ extension UserModelQuerySortThenBy
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterSortBy> thenByAddress() {
+  QueryBuilder<UserModel, UserModel, QAfterSortBy> thenByAddress_name() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address', Sort.asc);
+      return query.addSortBy(r'address_name', Sort.asc);
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QAfterSortBy> thenByAddressDesc() {
+  QueryBuilder<UserModel, UserModel, QAfterSortBy> thenByAddress_nameDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address', Sort.desc);
+      return query.addSortBy(r'address_name', Sort.desc);
     });
   }
 
@@ -1853,10 +2044,16 @@ extension UserModelQueryWhereDistinct
     });
   }
 
-  QueryBuilder<UserModel, UserModel, QDistinct> distinctByAddress(
+  QueryBuilder<UserModel, UserModel, QDistinct> distinctByAddress() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'address');
+    });
+  }
+
+  QueryBuilder<UserModel, UserModel, QDistinct> distinctByAddress_name(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'address', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'address_name', caseSensitive: caseSensitive);
     });
   }
 
@@ -1923,9 +2120,15 @@ extension UserModelQueryProperty
     });
   }
 
-  QueryBuilder<UserModel, String?, QQueryOperations> addressProperty() {
+  QueryBuilder<UserModel, List<double>?, QQueryOperations> addressProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'address');
+    });
+  }
+
+  QueryBuilder<UserModel, String?, QQueryOperations> address_nameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'address_name');
     });
   }
 
@@ -1983,7 +2186,10 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel()
   ..userName = json['userName'] as String?
   ..name = json['name'] as String?
   ..family = json['family'] as String?
-  ..address = json['address'] as String?
+  ..address_name = json['address_name'] as String?
+  ..address = (json['address'] as List<dynamic>?)
+      ?.map((e) => (e as num).toDouble())
+      .toList()
   ..phoneNumber = json['phoneNumber'] as String?
   ..access_token = json['access_token'] as String?;
 
@@ -1994,6 +2200,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'userName': instance.userName,
       'name': instance.name,
       'family': instance.family,
+      'address_name': instance.address_name,
       'address': instance.address,
       'phoneNumber': instance.phoneNumber,
       'access_token': instance.access_token,

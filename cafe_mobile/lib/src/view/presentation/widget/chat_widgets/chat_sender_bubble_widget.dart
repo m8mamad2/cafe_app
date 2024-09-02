@@ -33,7 +33,7 @@ class ChatSenderBubbleWidget extends StatelessWidget {
                   children: [
                     Text(
                       senderMessage,
-                      style:Theme.of(context).textTheme.titleLarge,
+                      style:Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 14,fontWeight: FontWeight.w500),
                       textAlign: TextAlign.left,
                     ),
                     Container(

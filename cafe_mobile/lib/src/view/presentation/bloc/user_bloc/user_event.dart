@@ -9,7 +9,14 @@ final class CurrentUserEvent extends UserEvent {
 }
 
 final class UpdateUserEvent extends UserEvent { 
-  final String key;
-  final String value;
-  UpdateUserEvent(this.key, this.value);
+  // final String key;
+  // final String value;
+  final Map<String, dynamic> data;
+  UpdateUserEvent(this.data);
+}
+
+final class GetAddressUserEvent extends UserEvent { 
+  final double lat;
+  final double lon;
+  GetAddressUserEvent(this.lat, this.lon);
 }

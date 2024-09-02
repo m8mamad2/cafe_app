@@ -25,7 +25,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
      });
 
     on<AddToCartsEvent>((event, emit) async{
-      emit(LoadingCartState());
       try{
         await usecase.addToCart(event.cartModel)
           .then((value) => value is DataSuccess
@@ -56,7 +55,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
      });
     
     on<IncCartEvent>((event, emit) async{
-      emit(LoadingCartState());
       try{
         await usecase.incCart(event.id, event.isInc)
           .then((value) => value is DataSuccess

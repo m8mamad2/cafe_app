@@ -1,4 +1,5 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
+import 'package:cafe_mobile/src/core/shimmer/shimmers_widgets/profile_screen.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/user_bloc/user_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/profile_widgets/profile_one_card_widget.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       body: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
-          if(state is LoadingUserState)return const CircularProgressIndicator();
+          if(state is LoadingUserState)return profileShimmer(context);
           if(state is SuccessUserState) {
             final data = state.userModel;
             return Column(
@@ -83,15 +84,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       profileOneCardWidget(context, "Your Name",    data.name ?? "no name",         'name'),
                       profileOneCardWidget(context, "Your number",  data.phoneNumber ?? "no phone", 'phoneNumber'),
-                      profileOneCardWidget(context, "Your Address", data.address ??  'no address',  'address'),
-                      profileOneCardWidget(context, "Your Favorite", "",''),
+                      profileOneCardWidget(context, "Your Address", data.address_name ??  'no address',  'address'),
+                      profileOneCardWidget(context, "Your Orders", "",''),
                     ],
                   ),
                 )
               ],
             );
           }
-          if(state is FailUserState) return Text(state.error, style: TextStyle(color: Colors.white),);
+          if(state is FailUserState) return Text(state.error, style: const TextStyle(color: Colors.white),);
           return Container();
         },
       ),
