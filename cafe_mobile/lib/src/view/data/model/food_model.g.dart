@@ -54,7 +54,7 @@ const FoodModelSchema = CollectionSchema(
   getId: _foodModelGetId,
   getLinks: _foodModelGetLinks,
   attach: _foodModelAttach,
-  version: '3.1.0+1',
+  version: '3.1.8',
 );
 
 int _foodModelEstimateSize(
