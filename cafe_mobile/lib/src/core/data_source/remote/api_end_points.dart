@@ -1,7 +1,7 @@
 class ApiEndPoints{
   
   // static const kBaseUrl = 'http://localhost:3000';
-  static const String kBaseUrl = 'http://192.168.115.143:3000';
+  static const String kBaseUrl = 'http://46.249.101.196:3000';
 
   static const String kLoginUrl = '$kBaseUrl/auth/login';
   static const String kSignupUrl = '$kBaseUrl/auth/signup';

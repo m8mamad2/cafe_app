@@ -64,7 +64,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin{
                     Expanded(
                       flex: 6,
                       // child: RiveAnimation.asset('assets/foodie.riv')),
-                      child: Container()),
+                      child: Image.asset("assets/food_logo2.png")),
                     Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
