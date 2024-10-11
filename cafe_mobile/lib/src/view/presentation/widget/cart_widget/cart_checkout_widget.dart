@@ -1,10 +1,13 @@
 
+import 'dart:developer';
+
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
 import 'package:cafe_mobile/src/core/shimmer/shimmers_widgets/cart_shimmer.dart';
 import 'package:cafe_mobile/src/core/utils/snackbar.dart';
 import 'package:cafe_mobile/src/view/data/model/order_model.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/order_bloc/order_bloc.dart';
+import 'package:cafe_mobile/src/view/presentation/bloc/user_bloc/user_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/page/order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,27 +44,41 @@ Widget cartCheckoutWidget(BuildContext context)=> Container(
                   
                   SizedBox(height: context.height*0.03,),
 
-                  BlocConsumer<OrderBloc, OrderState>(
-                    listener: (context, state) {
-                      if(state is SuccessAddOrderState){
-                        context.navigate(const OrderScreen());
-                        context.read<CartBloc>().add(ClearCartModel());
-                        showSnackBar(context, ' Your Order Was Success, See Details in Order Page ');
-                      }
-                    },
-                    builder: (context, state) {
-
-                      void onTap(){
-                        if(data != null && data.isNotEmpty){
-                          final List<OrderModel> convertToOrder = data.map((e) => OrderModel.fromCartModel(e),).toList();
-                          context.read<OrderBloc>().add(AddOrderEvent(convertToOrder));
-                        }
-                        else showSnackBar(context, "Please First Choes a Food");
-                      }
-
-                      if(state is LoadingOrderState) return button(context, true, (){});
-                      if(state is SuccessOrderState || state is InitialOrderState) return button(context, false, onTap);
-                      if(state is FailOrderState) return button(context, false, onTap, state.error);
+                  BlocBuilder<UserBloc, UserState>(
+                    builder: (context, state){
+                      if(state is LoadingUserState)return button(context, true, (){});
+                      if(state is SuccessUserState){
+                        final userData = state.userModel;
+                        return BlocConsumer<OrderBloc, OrderState>(
+                          listener: (context, state) {
+                            
+                            if(state is SuccessAddOrderState){
+                              context.navigate(const OrderScreen());
+                              context.read<CartBloc>().add(ClearCartModel());
+                              showSnackBar(context, ' Your Order Was Success, See Details in Order Page ');
+                            }
+                          },
+                          builder: (context, state) {
+                            
+                            void onTap(){
+                              if( userData.address != null && userData.address!.isNotEmpty){
+                                if(data != null && data.isNotEmpty){
+                                  final List<OrderModel> convertToOrder = data.map((e) => OrderModel.fromCartModel(e),).toList();
+                                  context.read<OrderBloc>().add(AddOrderEvent(convertToOrder));
+                                }
+                                else showSnackBar(context, "Please First Choes a Food");
+                              }
+                              else showSnackBar(context, "Please complete your address in the profile section first");
+                            }
+                        
+                            if(state is LoadingOrderState) return button(context, true, (){});
+                            if(state is SuccessOrderState || state is InitialOrderState) return button(context, false, onTap);
+                            if(state is FailOrderState) return button(context, false, onTap, state.error);
+                            return Container();
+                          },
+                        );
+                      };
+                      if(state is FailUserState)return button(context, false, ()=> context.read<UserBloc>().add(CurrentUserEvent(false)), state.error);
                       return Container();
                     },
                   )

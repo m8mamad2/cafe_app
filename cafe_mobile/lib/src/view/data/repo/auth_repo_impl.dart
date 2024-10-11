@@ -32,7 +32,7 @@ class AuthRepoImpl extends AuthRepo {
   @override
   Future<bool> logout()async {
     try{
-      await LocalDb.isar.writeTxn(() => LocalDb.isar.userModels.clear(),);
+      await LocalDb.isar.writeTxn(() => LocalDb.isar.userModels.clear());
       return true;
     }
     catch(e){ return false; }

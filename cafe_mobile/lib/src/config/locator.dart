@@ -65,7 +65,7 @@ class Locator{
     
     getIt.registerSingleton<OrderRepo>(OrderRepoImpl( getIt() ));
     getIt.registerSingleton<OrderUsecase>(OrderUsecase( getIt() ));
-    getIt.registerSingleton<OrderBloc>(OrderBloc( getIt() ));
+    getIt.registerSingleton<OrderBloc>(OrderBloc( getIt(), getIt() ));
 
   }
 

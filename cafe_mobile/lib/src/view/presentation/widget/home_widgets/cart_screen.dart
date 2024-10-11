@@ -2,6 +2,7 @@ import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
 import 'package:cafe_mobile/src/core/shimmer/shimmers_widgets/cart_shimmer.dart';
 import 'package:cafe_mobile/src/core/widgets/empty_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/cart_bloc/cart_bloc.dart';
+import 'package:cafe_mobile/src/view/presentation/bloc/user_bloc/user_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/cart_widget/cart_checkout_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/cart_widgets/cart_one_cart_widget.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     context.read<CartBloc>().add(GetAllCartsEvent());
+    context.read<UserBloc>().add(CurrentUserEvent(false));
   }
 
   @override

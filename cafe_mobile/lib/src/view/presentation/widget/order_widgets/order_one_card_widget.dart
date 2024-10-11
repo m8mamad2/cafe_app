@@ -30,7 +30,7 @@ Widget orderOneCardWidget(BuildContext context, OrderModel orderModel)=> InkWell
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(orderModel.title?.substring(0,15) ?? '',style: const TextStyle(color: Colors.white,fontSize: 14),),
+                        Text(orderModel.title?.substring(0,9) ?? '',style: const TextStyle(color: Colors.white,fontSize: 14),),
                         Text(orderModel.description?.substring(0,28) ?? '',style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white60),),]),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

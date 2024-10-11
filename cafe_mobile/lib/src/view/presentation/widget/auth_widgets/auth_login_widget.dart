@@ -1,8 +1,10 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
 import 'package:cafe_mobile/src/core/utils/dialogs.dart';
+import 'package:cafe_mobile/src/core/widgets/bottom_navigation_bar_widget.dart';
 import 'package:cafe_mobile/src/view/data/model/auth_model/auth_login_req_model.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/page/home_screen.dart';
+import 'package:cafe_mobile/src/view/presentation/page/main_screen.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/auth_widgets/auth_submit_widget.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/auth_widgets/auth_text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +47,7 @@ class _AuthLoginWidgetState extends State<AuthLoginWidget> {
           
               BlocConsumer<AuthBloc, AuthState>( 
                 listener: (context, state) {
-                  if(state is AuthStateSuccess) context.navigate(const HomeScreen());
+                  if(state is AuthStateSuccess) context.navigateReplacement(const MainScreen());
                   if(state is AuthStateFail) errorDialog(context, state.error ?? 'There is A problem \n please Try Again');
                  },
                 builder: (context, state) {

@@ -18,7 +18,7 @@ blocProviders(Widget child)=> MultiBlocProvider(
     BlocProvider<CartBloc>(create: (context) => CartBloc( Locator().getIt() ),),
     BlocProvider<UserBloc>(create: (context) => UserBloc( Locator().getIt(), Locator().getIt() ),),
     BlocProvider<ReservationBloc>(create: (context) => ReservationBloc( Locator().getIt() ),),
-    BlocProvider<OrderBloc>(create: (context) => OrderBloc( Locator().getIt() ),),
+    BlocProvider<OrderBloc>(create: (context) => OrderBloc( Locator().getIt(), Locator().getIt() ),),
   ], 
 
   child: child

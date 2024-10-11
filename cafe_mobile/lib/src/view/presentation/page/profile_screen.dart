@@ -1,5 +1,6 @@
 import 'package:cafe_mobile/src/core/extenstion/extencions.dart';
 import 'package:cafe_mobile/src/core/shimmer/shimmers_widgets/profile_screen.dart';
+import 'package:cafe_mobile/src/view/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/bloc/user_bloc/user_bloc.dart';
 import 'package:cafe_mobile/src/view/presentation/widget/profile_widgets/profile_one_card_widget.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         fontSize: 15)),
                           ],
                         ),
+                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: InkWell(
+                          onTap: ()=> context.read<AuthBloc>().add(AuthLogoutEvent(context)),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 13),
+                            margin: const EdgeInsets.symmetric(vertical:40, horizontal: 30),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color:Colors.white),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Logout'),
+                                SizedBox(width: 10,),
+                                Icon(Icons.logout)
+                              ],
+                            )),
+                        )
                       )
                     ],
                   ),

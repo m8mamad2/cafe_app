@@ -14,3 +14,5 @@ final class CompleteOrderEvent extends OrderEvent {
   final List<int> orderId;
   CompleteOrderEvent(this.orderId);
 }
+
+final class GetLocationOrderEvent extends OrderEvent {  }

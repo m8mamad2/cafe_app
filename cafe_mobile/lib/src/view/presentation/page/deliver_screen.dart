@@ -37,9 +37,13 @@ class _DeliverScreenState extends State<DeliverScreen> {
       markes.add(Marker(point: LatLng(e.deliver_init_point.lat, e.deliver_init_point.lon), child: Image.asset('assets/car.png')));
       initMarkes.addAll([
         Marker(point: LatLng(e.start_point.first, e.start_point.last), child: Image.asset('assets/cafe.png')),
-        Marker(point: LatLng(e.end_point.first, e.end_point.last), child: Image.asset('assets/home.png')),
+        Marker(point: LatLng(e.end_point.isEmpty ? 33.9876533 :  e.end_point.first , e.end_point.isEmpty ? 51.4428856 : e.end_point.last ), child: Image.asset('assets/home.png')),
       ]);
-      _getRoute(e.start_point.first, e.start_point.last, e.end_point.first,e.end_point.last);
+      _getRoute(
+        e.start_point.first, 
+        e.start_point.last, 
+        e.end_point.isEmpty ? 33.9876533 :  e.end_point.first ,
+        e.end_point.isEmpty ? 51.4428856 : e.end_point.last);
       
     });
     socketController.locationController.stream.listen((e){
