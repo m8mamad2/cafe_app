@@ -32,7 +32,7 @@ COPY --from=builder /app/package*.json /app/
 COPY --from=builder /app/prisma /app/prisma
 
 # Expose the ports (3000 for HTTP, 3001 for Socket.IO)
-EXPOSE 3000 3001
+EXPOSE 6000 6001
 
 
 # Run the NestJS application
