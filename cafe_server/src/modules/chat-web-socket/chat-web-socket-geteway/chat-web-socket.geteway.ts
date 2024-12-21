@@ -4,7 +4,7 @@ import { ChatWebSocketService } from '../chat-web-socket.service';
 import { Prisma } from '@prisma/client';
 import { ChatGetMessageDto } from '../dto/chat-get-message-dto';
 
-@WebSocketGateway(3001, {})
+@WebSocketGateway(6001, {})
 export class ChatWebSocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     constructor(private chatWebSocketService: ChatWebSocketService) { }
