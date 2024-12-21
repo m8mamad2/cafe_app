@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
+# Generate Prisma Client
+RUN npx prisma generate
+
 # Build the NestJS app
 RUN npm run build
 
@@ -26,9 +29,13 @@ WORKDIR /app
 COPY --from=builder /app/dist /app/dist
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/package*.json /app/
+COPY --from=builder /app/prisma /app/prisma
 
-# Expose the ports (3000 for HTTP, 8001 for Socket.IO)
+# Expose the ports (3000 for HTTP, 3001 for Socket.IO)
 EXPOSE 3000 3001
+
+# Deploy Prisma Migrations (Optional, for production environments)
+RUN npx prisma migrate deploy
 
 # Run the NestJS application
 CMD ["npm", "run", "start:prod"]
