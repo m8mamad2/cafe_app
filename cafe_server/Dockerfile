@@ -34,8 +34,6 @@ COPY --from=builder /app/prisma /app/prisma
 # Expose the ports (3000 for HTTP, 3001 for Socket.IO)
 EXPOSE 3000 3001
 
-# Deploy Prisma Migrations (Optional, for production environments)
-RUN npx prisma migrate deploy
 
 # Run the NestJS application
 CMD ["npm", "run", "start:prod"]
